@@ -2,7 +2,7 @@
 #
 class ceph::install {
 
-  private()
+  assert_private()
 
   package { 'ceph':
     ensure => installed,

@@ -2,33 +2,24 @@
 #
 # Installs an object gateway
 #
-# === Parameters
-#
-# [*id*]
-#   Gateway identifier
-#
-class ceph::rgw (
-  $id = $::hostname,
-) {
+class ceph::rgw {
 
-  private()
+  assert_private()
 
-  include ::ceph
-
-  if $ceph::rgw {
+  if $::ceph::rgw {
 
     package { 'radosgw':
       ensure => installed,
     } ->
 
-    file { "/var/lib/ceph/radosgw/ceph-radosgw.${::id}":
+    file { "/var/lib/ceph/radosgw/ceph-radosgw.${::rgw_id}":
       ensure => directory,
       owner  => 'root',
       group  => 'root',
       mode   => '0755',
     } ->
 
-    file { "/var/lib/ceph/radosgw/ceph-radosgw.${::id}/done":
+    file { "/var/lib/ceph/radosgw/ceph-radosgw.${::rgw_id}/done":
       ensure => file,
       owner  => 'root',
       group  => 'root',

@@ -2,59 +2,46 @@
 #
 # Installs a ceph monitor on the host
 # 
-# === Parameters
-#
-# [*id*]
-#   Human readable monitor name, defaults to hostname
-#
-# [*key*]
-#   mon. authentication key shared between monitors
-#
-class ceph::mon (
-  $id = $::hostname,
-  $key = 'AQA7yNlUMy3sFhAA62XHf57L0QhSI44qqqOVXA==',
-) {
+class ceph::mon {
 
-  private()
-
-  include ::ceph
+  assert_private()
 
   if $::ceph::mon {
 
     # Create the monitor filesystem
-    exec { "ceph-mon --mkfs -i ${id} --key ${key}":
-      creates => "/var/lib/ceph/mon/ceph-${id}",
+    exec { "ceph-mon --mkfs -i ${::ceph::mon_id} --key ${::ceph::mon_key}":
+      creates => "/var/lib/ceph/mon/ceph-${::ceph::mon_id}",
     } ->
 
     # Enable managament by init/upstart
     file { [
-      "/var/lib/ceph/mon/ceph-${id}/done",
-      "/var/lib/ceph/mon/ceph-${id}/upstart",
+      "/var/lib/ceph/mon/ceph-${::ceph::mon_id}/done",
+      "/var/lib/ceph/mon/ceph-${::ceph::mon_id}/upstart",
     ]:
       ensure => file,
     } ->
 
     # Prevent ceph-create-keys from adding in defaults on monitor startup
-    exec { "client.admin ${id}":
+    exec { "client.admin ${::ceph::mon_id}":
       command => 'touch /etc/ceph/ceph.client.admin.keyring',
       creates => '/etc/ceph/ceph.client.admin.keyring',
     } ->
-    exec { "bootstrap-osd ${id}":
+    exec { "bootstrap-osd ${::ceph::mon_id}":
       command => 'touch /var/lib/ceph/bootstrap-osd/ceph.keyring',
       creates => '/var/lib/ceph/bootstrap-osd/ceph.keyring',
     } ->
-    exec { "bootstrap-mds ${id}":
+    exec { "bootstrap-mds ${::ceph::mon_id}":
       command => 'touch /var/lib/ceph/bootstrap-mds/ceph.keyring',
       creates => '/var/lib/ceph/bootstrap-mds/ceph.keyring',
     } ->
 
     # Finally start the service
-    service { "ceph-mon-${id}":
+    service { "ceph-mon-${::ceph::mon_id}":
       ensure   => running,
       provider => 'init',
-      start    => "start ceph-mon id=${id}",
-      status   => "status ceph-mon id=${id}",
-      stop     => "stop ceph-mon id=${id}",
+      start    => "start ceph-mon id=${::ceph::mon_id}",
+      status   => "status ceph-mon id=${::ceph::mon_id}",
+      stop     => "stop ceph-mon id=${::ceph::mon_id}",
     }
 
   }

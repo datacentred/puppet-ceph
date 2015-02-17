@@ -2,22 +2,13 @@
 #
 # Installs a set of OSDs
 #
-# === Parameters
-#
-# [*disks*]
-#   Hash of osd resources to create
-#
-class ceph::osd (
-  $disks = {},
-) {
+class ceph::osd {
 
-  private()
+  assert_private()
 
-  include ::ceph
+  if $::ceph::osd {
 
-  if $ceph::osd {
-
-    create_resources('osd', $disks)
+    create_resources('osd', $::ceph::disks)
 
   }
 

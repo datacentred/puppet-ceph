@@ -2,17 +2,16 @@
 #
 # Configures ceph via ceph.conf
 #
-# === Parameters
-#
-# [*values*]
-#   Hash of ceph::config_entry resources to be created
-#
-class ceph::config (
-  $values = {}
-) {
+class ceph::config {
 
-  private()
+  assert_private()
 
-  create_resources('ceph::config_entry', $values)
+  file { '/etc/ceph/ceph.conf':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => template('ceph/ceph.conf.erb'),
+  }
 
 }

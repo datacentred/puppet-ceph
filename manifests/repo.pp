@@ -2,27 +2,16 @@
 #
 # Installs the ceph repo
 #
-# === Parameters
-#
-# [*manage*]
-#   Whether this module should install custom repos
-#
-# [*version*]
-#   Ceph version to install the repo for
-#
-class ceph::repo (
-  $manage = false,
-  $version = 'giant',
-) {
+class ceph::repo {
 
-  private()
+  assert_private()
 
-  if $manage {
+  if $::ceph::manage_repo {
 
     include ::apt
 
-    apt::source { "ceph":
-      location   => "http://eu.ceph.com/debian-${version}",
+    apt::source { 'ceph':
+      location   => "http://eu.ceph.com/debian-${::ceph::repo_version}",
       release    => $::lsbdistcodename,
       repos      => 'main',
       key        => '17ED316D',

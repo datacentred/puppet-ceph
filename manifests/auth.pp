@@ -2,17 +2,10 @@
 #
 # Creates the requested keyrings on the host
 #
-# === Parameters
-#
-# [*keys*]
-#   Hash of ceph::keyring resources to be created
-#
-class ceph::auth (
-  $keys = {},
-) {
+class ceph::auth {
 
-  private()
+  assert_private()
 
-  create_resources('ceph::keyring', $keys)
+  create_resources('ceph::keyring', $::ceph::keys)
 
 }

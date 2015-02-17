@@ -44,7 +44,7 @@ define ceph::keyring (
   $mode = '0644',
 ) {
 
-  private()
+  assert_private()
 
   file { $name:
     ensure  => file,
@@ -59,7 +59,7 @@ define ceph::keyring (
     include ::ceph::mon
 
     $mon_name = 'mon.'
-    $mon_key = "/var/lib/ceph/mon/ceph-${ceph::mon::id}/keyring"
+    $mon_key = "/var/lib/ceph/mon/ceph-${ceph::mon_id}/keyring"
 
     exec { "ceph -n ${mon_name} -k ${mon_key} auth import -i ${name}":
       unless  => "ceph -n ${mon_name} -k ${mon_key} auth list | grep ${key}",
