@@ -1,0 +1,11 @@
+[<%= @user %>]
+  key = <%= @key %>
+<% if @caps_mon -%>
+  caps mon = "<%= @caps_mon %>"
+<% end -%>
+<% if @caps_mds -%>
+  caps mds = "<%= @caps_mds %>"
+<% end -%>
+<% if @caps_osd -%>
+  caps osd = "<%= @caps_osd %>"
+<% end -%>
