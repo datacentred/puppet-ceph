@@ -11,12 +11,16 @@ class ceph::repo {
     include ::apt
 
     apt::source { 'ceph':
-      location   => "http://eu.ceph.com/debian-${::ceph::repo_version}",
-      release    => $::lsbdistcodename,
-      repos      => 'main',
-      key        => '17ED316D',
-      key_server => 'keyserver.ubuntu.com',
+      location => "http://eu.ceph.com/debian-${::ceph::repo_version}",
+      release  => $::lsbdistcodename,
+      repos    => 'main',
+      key      => {
+        'id'     => '7F6C9F236D170493FCF404F27EBFDD5D17ED316D',
+        'server' => 'keyserver.ubuntu.com',
+      },
     }
+
+    Class['::apt'] -> Package <||>
 
   }
 

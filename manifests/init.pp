@@ -34,16 +34,13 @@
 # [*disks*]
 #   Hash of osd resources to create
 #
-# [*rgw_id*]
-#   Gateway identifier
-#
 class ceph (
   # Install component
   $mon = false,
   $osd = false,
   $rgw = false,
   # Package management
-  $manage_repo = false,
+  $manage_repo = true,
   $repo_version = 'hammer',
   # Global configuration
   $conf = {
@@ -60,6 +57,9 @@ class ceph (
     'osd' => {
       'osd_journal_size' => 100,
     },
+    'client.rgw' => {
+      'keyring' => '/etc/ceph/ceph.client.rgw.keyring',
+    },
   },
   # Monitor configuration
   $mon_id = $::hostname,
@@ -72,6 +72,12 @@ class ceph (
       'caps_mon' => 'allow *',
       'caps_osd' => 'allow *',
       'caps_mds' => 'allow',
+    },
+    '/etc/ceph/ceph.client.rgw.keyring' => {
+      'user'     => 'client.rgw',
+      'key'      => 'AQD+zXZVDljeKRAAKA30V/QvzbI9oUtcxAchog==',
+      'caps_mon' => 'allow rwx',
+      'caps_osd' => 'allow rwx',
     },
     '/var/lib/ceph/bootstrap-osd/ceph.keyring' => {
       'user'     => 'client.bootstrap-osd',
@@ -96,8 +102,6 @@ class ceph (
       'fstype' => 'xfs',
     },
   },
-  # RGW configuration
-  $rgw_id = $::hostname,
 ) {
 
   contain ::ceph::repo

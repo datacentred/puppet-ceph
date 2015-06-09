@@ -12,22 +12,25 @@ class ceph::rgw {
       ensure => installed,
     } ->
 
-    file { "/var/lib/ceph/radosgw/ceph-radosgw.${::rgw_id}":
-      ensure => directory,
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0755',
+    file {
+      '/var/lib/ceph/radosgw/ceph-rgw':
+        ensure => directory,
+        owner  => 'root',
+        group  => 'root',
+        mode   => '0755';
+      '/var/lib/ceph/radosgw/ceph-rgw/done':
+        ensure => file,
+        owner  => 'root',
+        group  => 'root',
+        mode   => '0755',
     } ->
 
-    file { "/var/lib/ceph/radosgw/ceph-radosgw.${::rgw_id}/done":
-      ensure => file,
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0755',
-    } ->
-
-    service { 'radosgw-all':
-      ensure    => running,
+    service { 'radosgw':
+      ensure   => running,
+      provider => 'init',
+      start    => 'start radosgw id=rgw',
+      status   => 'status radosgw id=rgw',
+      stop     => 'stop radosgw id=rgw',
     }
 
   }

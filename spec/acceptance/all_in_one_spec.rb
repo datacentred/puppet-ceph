@@ -15,5 +15,8 @@ describe 'ceph' do
       apply_manifest(pp, :catch_failures => true)
       apply_manifest(pp, :catch_changes => true)
     end
+    it 'accepts http requests' do
+      shell('curl localhost:7480', :acceptable_exit_codes => 0)
+    end
   end
 end
