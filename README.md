@@ -1,5 +1,7 @@
 #Ceph
 
+[![Build Status](https://travis-ci.org/spjmurray/puppet-ceph.png?branch=master)](https://travis-ci.org/spjmurray/puppet-ceph)
+
 ####Table Of Contents
 
 1. [Overview](#overview)
