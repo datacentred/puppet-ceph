@@ -1,7 +1,7 @@
 rvm:
   - 1.9.3
   - 2.1.2
-sudo: true
+sudo: required
 notifications:
   email:
     - spjmurray@yahoo.co.uk
