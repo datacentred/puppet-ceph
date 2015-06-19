@@ -1,0 +1,11 @@
+rvm:
+  - 1.9.3
+  - 2.1.2
+notifications:
+  email:
+    - spjmurray@yahoo.co.uk
+install:
+  - bundle install
+script:
+  - bundle exec rake validate
+  - bundle exec rake beaker
