@@ -19,6 +19,9 @@
 # [*repo_version*]
 #   Ceph version to install the repo for
 #
+# [*repo_release*]
+#   OS release version.  Only LTS is supported
+#
 # [*conf*]
 #   Hash of ceph config file
 #
@@ -42,6 +45,7 @@ class ceph (
   # Package management
   $manage_repo = true,
   $repo_version = 'hammer',
+  $repo_release = 'trusty',
   # Global configuration
   $conf = {
     'global' => {

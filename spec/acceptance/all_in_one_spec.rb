@@ -9,6 +9,17 @@ describe 'ceph' do
           mon => true,
           osd => true,
           rgw => true,
+          disks => {
+            '2:0:0:1/2:0:0:4' => {
+              'fstype' => 'xfs',
+            },
+            '2:0:0:2/2:0:0:4' => {
+              'fstype' => 'xfs',
+            },
+            '2:0:0:3/2:0:0:4' => {
+              'fstype' => 'xfs',
+            },
+          },
         }
       EOS
       # Check for clean provisioning and idempotency
@@ -16,6 +27,7 @@ describe 'ceph' do
       apply_manifest(pp, :catch_changes => true)
     end
     it 'accepts http requests' do
+      shell('sleep 10')
       shell('curl localhost:7480', :acceptable_exit_codes => 0)
     end
   end
