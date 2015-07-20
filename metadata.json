@@ -1,0 +1,21 @@
+{
+  "name": "spjmurray-ceph",
+  "version": "1.0.0",
+  "author": "Simon Murray",
+  "license": "GPL-3.0",
+  "summary": "Ceph orchestration",
+  "source": "https://github.com/spjmurray/puppet-ceph",
+  "project_page": "https://github.com/spjmurray/puppet-ceph",
+  "issues_url": "https://github.com/spjmurray/puppet-ceph/issues",
+  "tags": ["ceph"],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [ "14.04", "14.10" ]
+    }
+  ],
+  "dependencies": [
+    { "name": "puppetlabs/stdlib", "version_requirement": ">=4.6.0" },
+    { "name": "puppetlabs/apt", "version_requirement": ">=2.1.0" }
+  ]
+}
