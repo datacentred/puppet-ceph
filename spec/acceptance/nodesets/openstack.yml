@@ -19,4 +19,5 @@ HOSTS:
       journal:
         size: 1000
 CONFIG:
+  type: foss
   openstack_network: beaker

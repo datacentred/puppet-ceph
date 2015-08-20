@@ -17,3 +17,5 @@ HOSTS:
         size: 10000
       journal:
         size: 1000
+CONFIG:
+  type: foss
