@@ -1,6 +1,5 @@
 rvm:
 - 1.9.3
-- 2.1.2
 script:
 - bundle exec rake validate
 - BEAKER_set=openstack BEAKER_debug=yes bundle exec rake beaker
