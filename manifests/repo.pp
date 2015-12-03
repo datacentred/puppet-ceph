@@ -15,8 +15,8 @@ class ceph::repo {
       release  => $::ceph::repo_release,
       repos    => 'main',
       key      => {
-        'id'     => '7F6C9F236D170493FCF404F27EBFDD5D17ED316D',
-        'server' => 'keyserver.ubuntu.com',
+        'id'     => '08B73419AC32B4E966C1A330E84AC2C0460F3994',
+        'source' => 'https://git.ceph.com/release.asc',
       },
     }
 
