@@ -22,6 +22,10 @@
 # [*repo_release*]
 #   OS release version.  Only LTS is supported
 #
+# [*conf_merge*]
+#   Ignore the value bound to ceph::conf and perform a
+#   hiera_hash call to merge config fragments tegether
+#
 # [*conf*]
 #   Hash of ceph config file
 #
@@ -30,6 +34,10 @@
 #
 # [*mon_key*]
 #   mon. authentication key shared between monitors
+#
+# [*keys_merge*]
+#   Ignore the value bound to ceph::keys and perform a
+#   hiera_hash call to merge keys together
 #
 # [*keys*]
 #   Hash of ceph::keyring resources to be created
@@ -47,6 +55,7 @@ class ceph (
   $repo_version = 'hammer',
   $repo_release = 'trusty',
   # Global configuration
+  $conf_merge = false,
   $conf = {
     'global' => {
       'fsid' => '62ed9bd6-adf4-11e4-8fb5-3c970ebb2b86',
@@ -69,6 +78,7 @@ class ceph (
   $mon_id = $::hostname,
   $mon_key = 'AQA7yNlUMy3sFhAA62XHf57L0QhSI44qqqOVXA==',
   # Key management
+  $keys_merge = false,
   $keys = {
     '/etc/ceph/ceph.client.admin.keyring' => {
       'user'     => 'client.admin',

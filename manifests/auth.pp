@@ -6,6 +6,12 @@ class ceph::auth {
 
   assert_private()
 
-  create_resources('ceph::keyring', $::ceph::keys)
+  if $::ceph::keys_merge {
+    $_keys = hiera_hash('ceph::keys')
+  } else {
+    $_keys = $::ceph::keys
+  }
+
+  create_resources('ceph::keyring', $_keys)
 
 }

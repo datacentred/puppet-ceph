@@ -6,6 +6,12 @@ class ceph::config {
 
   assert_private()
 
+  if $::ceph::conf_merge {
+    $_conf = hiera_hash('ceph::conf')
+  } else {
+    $_conf = $::ceph::conf
+  }
+
   file { '/etc/ceph/ceph.conf':
     ensure  => file,
     owner   => 'root',

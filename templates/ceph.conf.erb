@@ -1,4 +1,4 @@
-<% scope['::ceph::conf'].each do |section, setting_value| -%>
+<% @_conf.each do |section, setting_value| -%>
 [<%= section %>]
 <% setting_value.each do |setting, value| -%>
   <%= setting %> = <%= value %>
