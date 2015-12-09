@@ -3,12 +3,24 @@ require 'spec_helper_acceptance'
 describe 'ceph' do
   context 'all-in-one server' do
     it 'provisions with no errors' do
-      pp = <<-EOS
-        Exec { path => '/bin:/usr/bin:/sbin:/usr/sbin' }
-        class { 'ceph':
-          mon => true,
-          osd => true,
-          rgw => true,
+      # Select the disk layout based on the VM type as this defines
+      # the host bus adaptor and how the disks are presented
+      if default['hypervisor'] == 'vagrant'
+        disks = <<-EOS
+          disks => {
+            '2:0:0:0/5:0:0:0' => {
+              'fstype' => 'xfs',
+            },
+            '3:0:0:0/5:0:0:0' => {
+              'fstype' => 'xfs',
+            },
+            '4:0:0:0/5:0:0:0' => {
+              'fstype' => 'xfs',
+            },
+          },
+        EOS
+      elsif default['hypervisor'] == 'openstack'
+        disks = <<-EOS
           disks => {
             '2:0:0:1/2:0:0:4' => {
               'fstype' => 'xfs',
@@ -20,6 +32,17 @@ describe 'ceph' do
               'fstype' => 'xfs',
             },
           },
+        EOS
+      else
+        raise ArgumentError, "Unsupported hypervisor"
+      end
+      pp = <<-EOS
+        Exec { path => '/bin:/usr/bin:/sbin:/usr/sbin' }
+        class { 'ceph':
+          mon => true,
+          osd => true,
+          rgw => true,
+          #{disks}
         }
       EOS
       # Check for clean provisioning and idempotency
@@ -27,7 +50,8 @@ describe 'ceph' do
       apply_manifest(pp, :catch_changes => true)
     end
     it 'accepts http requests' do
-      shell('sleep 10')
+      # Wait for radosgw to start listening and ensure it works
+      retry_on(default, 'nc -vz localhost 7480', :max_retries => 300)
       shell('curl localhost:7480', :acceptable_exit_codes => 0)
     end
   end
