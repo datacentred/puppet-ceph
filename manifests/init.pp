@@ -116,6 +116,8 @@ class ceph (
       'fstype' => 'xfs',
     },
   },
+  # RGW management
+  $rgw_id = 'rgw',
 ) {
 
   contain ::ceph::repo

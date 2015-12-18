@@ -13,12 +13,12 @@ class ceph::rgw {
     } ->
 
     file {
-      '/var/lib/ceph/radosgw/ceph-rgw':
+      "/var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}":
         ensure => directory,
         owner  => 'root',
         group  => 'root',
         mode   => '0755';
-      '/var/lib/ceph/radosgw/ceph-rgw/done':
+      "/var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}/done":
         ensure => file,
         owner  => 'root',
         group  => 'root',
@@ -28,9 +28,9 @@ class ceph::rgw {
     service { 'radosgw':
       ensure   => running,
       provider => 'init',
-      start    => 'start radosgw id=rgw',
-      status   => 'status radosgw id=rgw',
-      stop     => 'stop radosgw id=rgw',
+      start    => "start radosgw id=${::ceph::rgw_id}",
+      status   => "status radosgw id=${::ceph::rgw_id}",
+      stop     => "stop radosgw id=${::ceph::rgw_id}",
     }
 
   }
