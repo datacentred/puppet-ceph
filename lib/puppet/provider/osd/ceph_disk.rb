@@ -19,6 +19,31 @@ private
     bd[0]
   end
 
+  # Translate a slot number into a device node
+  # Params:
+  # +slot+:: Slot number of the SAS expander e.g. "Slot 02"
+  def enclosure_slot_to_dev(slot)
+    # Get the expander
+    # TODO: Supports one enclosure services device, need a way of reliably addressing expanders
+    enclosures = Dir.entries('/sys/class/enclosure').reject { |x| x =~ /^\./ }
+    raise RuntimeError if enclosures.length > 1
+    # Get the device from the enclosure slot
+    blockdir = "/sys/class/enclosure/#{enclosures.first}/#{slot}/device/block"
+    raise RuntimeError if not File.exists?(blockdir)
+    Dir.entries(blockdir).reject { |x| x =~ /^\./ }.first
+  end
+
+  # Redirect the request to the correct SCSI backend
+  # Params:
+  # +indetifier+:: SCSI address or enclosure slot number
+  def identifier_to_dev(identifier)
+    if identifier.start_with?('Slot')
+      enclosure_slot_to_dev(identifier)
+    else
+      scsi_address_to_dev(identifier)
+    end
+  end
+
   # Check whether an OSD has been provisioned 
   # Params:
   # +dev+:: Device short name e.g. sdd
@@ -52,15 +77,15 @@ public
 
   # Check if the resource exists
   def exists?
-    @osd, @journal = resource[:name].split '/'
+    osd, journal = resource[:name].split '/'
     @fstype = resource[:fstype]
     begin
-      @osd_dev = scsi_address_to_dev @osd
-      @journal_dev = scsi_address_to_dev @journal
+      @osd_dev = identifier_to_dev(osd)
+      @journal_dev = identifier_to_dev(journal)
     rescue RuntimeError
       # Either the device isn't physically present or didn't have a device node
       # Valid state if a machine has a faulty drive slot for example
-      warning "unable to detect device #{@osd}"
+      warning "unable to detect device #{osd}"
       return true
     end
     device_prepared? @osd_dev

@@ -51,7 +51,7 @@ describe 'ceph' do
     end
     it 'accepts http requests' do
       # Wait for radosgw to start listening and ensure it works
-      retry_on(default, 'nc -vz localhost 7480', :max_retries => 300)
+      retry_on(default, 'nc -vz localhost 7480', :max_retries => 30)
       shell('curl localhost:7480', :acceptable_exit_codes => 0)
     end
   end
