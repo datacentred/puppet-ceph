@@ -57,21 +57,22 @@ class ceph (
   # Global configuration
   $conf_merge = false,
   $conf = {
-    'global' => {
-      'fsid' => '62ed9bd6-adf4-11e4-8fb5-3c970ebb2b86',
-      'mon_initial_members' => $::hostname,
-      'mon_host' => $::ipaddress,
-      'public_network' => "${::network_eth0}/24",
-      'cluster_network' => "${::network_eth0}/24",
-      'auth_supported' => 'cephx',
-      'filestore_xattr_use_omap' => true,
-      'osd_crush_chooseleaf_type' => '0',
+    'global'                => {
+      'fsid'                      => '62ed9bd6-adf4-11e4-8fb5-3c970ebb2b86',
+      'mon_initial_members'       => $::hostname,
+      'mon_host'                  => '127.0.0.1',
+      'public_network'            => '127.0.0.0/8',
+      'cluster_network'           => '127.0.0.0/8',
+      'auth_supported'            => 'cephx',
+      'filestore_xattr_use_omap'  => true,
+      'osd_crush_chooseleaf_type' => 0,
     },
-    'osd' => {
+    'osd'                   => {
       'osd_journal_size' => 100,
     },
-    'client.rgw' => {
-      'keyring' => '/etc/ceph/ceph.client.rgw.keyring',
+    'client.radosgw.puppet' => {
+      'keyring'       => '/etc/ceph/ceph.client.radosgw.puppet.keyring',
+      'rgw frontends' => '"civetweb port=7480"'
     },
   },
   # Monitor configuration
@@ -80,25 +81,25 @@ class ceph (
   # Key management
   $keys_merge = false,
   $keys = {
-    '/etc/ceph/ceph.client.admin.keyring' => {
+    '/etc/ceph/ceph.client.admin.keyring'          => {
       'user'     => 'client.admin',
       'key'      => 'AQBAyNlUmO09CxAA2u2p6s38wKkBXaLWFeD7bA==',
       'caps_mon' => 'allow *',
       'caps_osd' => 'allow *',
       'caps_mds' => 'allow',
     },
-    '/etc/ceph/ceph.client.rgw.keyring' => {
-      'user'     => 'client.rgw',
+    '/etc/ceph/ceph.client.radosgw.puppet.keyring' => {
+      'user'     => 'client.radosgw.puppet',
       'key'      => 'AQD+zXZVDljeKRAAKA30V/QvzbI9oUtcxAchog==',
       'caps_mon' => 'allow rwx',
       'caps_osd' => 'allow rwx',
     },
-    '/var/lib/ceph/bootstrap-osd/ceph.keyring' => {
+    '/var/lib/ceph/bootstrap-osd/ceph.keyring'     => {
       'user'     => 'client.bootstrap-osd',
       'key'      => 'AQDLGtpUdYopJxAAnUZHBu0zuI0IEVKTrzmaGg==',
       'caps_mon' => 'allow profile bootstrap-osd',
     },
-    '/var/lib/ceph/bootstrap-mds/ceph.keyring' => {
+    '/var/lib/ceph/bootstrap-mds/ceph.keyring'     => {
       'user'     => 'client.bootstrap-mds',
       'key'      => 'AQDLGtpUlWDNMRAAVyjXjppZXkEmULAl93MbHQ==',
       'caps_mon' => 'allow profile bootstrap-mds',
@@ -117,8 +118,11 @@ class ceph (
     },
   },
   # RGW management
-  $rgw_id = 'rgw',
-) {
+  $rgw_id = 'radosgw.puppet',
+  # Parameters
+  $service_provider = $::ceph::params::service_provider,
+  $radosgw_package = $::ceph::params::radosgw_package,
+) inherits ceph::params {
 
   contain ::ceph::repo
   contain ::ceph::install

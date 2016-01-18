@@ -16,9 +16,12 @@ class ceph::mon {
     # Enable managament by init/upstart
     file { [
       "/var/lib/ceph/mon/ceph-${::ceph::mon_id}/done",
-      "/var/lib/ceph/mon/ceph-${::ceph::mon_id}/upstart",
+      "/var/lib/ceph/mon/ceph-${::ceph::mon_id}/${ceph::service_provider}",
     ]:
       ensure => file,
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0644',
     } ->
 
     # Prevent ceph-create-keys from adding in defaults on monitor startup
@@ -36,12 +39,27 @@ class ceph::mon {
     } ->
 
     # Finally start the service
-    service { "ceph-mon-${::ceph::mon_id}":
-      ensure   => running,
-      provider => 'init',
-      start    => "start ceph-mon id=${::ceph::mon_id}",
-      status   => "status ceph-mon id=${::ceph::mon_id}",
-      stop     => "stop ceph-mon id=${::ceph::mon_id}",
+    Service['ceph-mon']
+
+    case $::operatingsystem {
+      'Ubuntu': {
+        service { 'ceph-mon':
+          ensure   => running,
+          provider => 'init',
+          start    => "start ceph-mon id=${::ceph::mon_id}",
+          status   => "status ceph-mon id=${::ceph::mon_id}",
+          stop     => "stop ceph-mon id=${::ceph::mon_id}",
+        }
+      }
+      default: {
+        service { 'ceph-mon':
+          ensure   => running,
+          provider => 'init',
+          start    => "/etc/init.d/ceph start mon.${::ceph::mon_id}",
+          status   => "/etc/init.d/ceph status mon.${::ceph::mon_id}",
+          stop     => "/etc/init.d/ceph stop mon.${::ceph::mon_id}",
+        }
+      }
     }
 
   }

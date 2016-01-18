@@ -68,6 +68,11 @@ public
   def create
     command = "ceph-disk prepare --fs-type #{@fstype} /dev/#{@osd_dev} /dev/#{@journal_dev}"
     Puppet::Util::Execution.execute(command)
+    # Upstart automatically does this for us via udev events
+    if :operatingsystem != 'Ubuntu'
+      command = "ceph-disk activate /dev/#{@osd_dev}1"
+      Puppet::Util::Execution.execute(command)
+    end
   end
 
   # Destroy the resource

@@ -1,8 +1,9 @@
 require 'spec_helper_acceptance'
 
 describe 'ceph' do
-  context 'all-in-one server' do
+  context 'all services' do
     it 'provisions with no errors' do
+
       # Select the disk layout based on the VM type as this defines
       # the host bus adaptor and how the disks are presented
       if default['hypervisor'] == 'vagrant'
@@ -36,6 +37,7 @@ describe 'ceph' do
       else
         raise ArgumentError, "Unsupported hypervisor"
       end
+
       pp = <<-EOS
         Exec { path => '/bin:/usr/bin:/sbin:/usr/sbin' }
         class { 'ceph':
@@ -45,14 +47,15 @@ describe 'ceph' do
           #{disks}
         }
       EOS
+
       # Check for clean provisioning and idempotency
       apply_manifest(pp, :catch_failures => true)
       apply_manifest(pp, :catch_changes => true)
+
     end
     it 'accepts http requests' do
       # Wait for radosgw to start listening and ensure it works
-      retry_on(default, 'nc -vz localhost 7480', :max_retries => 30)
-      shell('curl localhost:7480', :acceptable_exit_codes => 0)
+      retry_on(default, 'netstat -l | grep 7480', :max_retries => 30)
     end
   end
 end

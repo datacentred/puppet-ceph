@@ -26,6 +26,13 @@ coding device names is bad.  However if we model deployment on hardware location
 then we can derive the device name, probe the drive partiton type and provision
 based on whether ceph-disk has been run.
 
+The OSD provider can also operate on enclosures with SES firmware running on
+a SAS expander.  In some cases SCSI addresses aren't predicatable and susceptible
+to the same enumeration problem as /dev device names.  In these cases the devices
+can be provisioned with 'Slot 01/Slot 12' which directly correlates with slot names
+found in sysfs.  The two addressing modes can be used interchangably thus
+configuration like 'Slot 01/2:0:0:0' is permissible.
+
 ### Usage
 
 The module is exlusively for use with hiera to segregate data from code thus
@@ -88,8 +95,12 @@ ceph::disks:
     fstype: 'xfs'
 ```
 
+It is recommended to enable deep merging so that global configuration can be
+defined in common.yaml and role/host specific configuration merged with the
+global section.
+
 ##Limitations
 
-1. Ubuntu only
-2. Keys are implicitly added on the monitor, ergo all keys need to be defined
+1. Keys are implicitly added on the monitor, ergo all keys need to be defined
    on the monitor node
+2. For use with ceph 0.94 (Hammer) or lower
