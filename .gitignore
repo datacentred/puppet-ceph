@@ -8,3 +8,4 @@ tags
 Gemfile.lock
 log
 pkg
+travis.log
