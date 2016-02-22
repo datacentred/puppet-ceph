@@ -1,19 +1,21 @@
-#Ceph
+# Ceph
 
 [![Build Status](https://travis-ci.org/spjmurray/puppet-ceph.png?branch=master)](https://travis-ci.org/spjmurray/puppet-ceph)
 
-####Table Of Contents
+#### Table Of Contents
 
 1. [Overview](#overview)
 2. [Module Description](#module-description)
-3. [Usage](#usage)
-4. [Limitations](#limitations)
+3. [Setup - The basics of getting started with ceph](#setup)
+    * [Setup Requirements](#setup-requirements)
+4. [Usage](#usage)
+5. [Limitations](#limitations)
 
-##Overview
+## Overview
 
 Deploys Ceph components
 
-###Module Description
+## Module Description
 
 Very lightweight implementation of Ceph deployment.  This module depends quite
 heavily on knowledge of how the various ceph commands work and the requisite
@@ -33,7 +35,21 @@ can be provisioned with 'Slot 01/Slot 12' which directly correlates with slot na
 found in sysfs.  The two addressing modes can be used interchangably thus
 configuration like 'Slot 01/2:0:0:0' is permissible.
 
-### Usage
+## Setup
+
+### Setup Requirements
+
+Paths to binaries executed by this module are relative, so you will need to include
+the following snippet, typically in manifests/site.pp, in order to execute the
+generated catalog:
+
+```puppet
+Exec {
+  path => '/bin:/usr/bin:/sbin:/usr/sbin',
+}
+```
+
+## Usage
 
 The module is exlusively for use with hiera to segregate data from code thus
 all you need in your manifests is:
@@ -99,7 +115,7 @@ It is recommended to enable deep merging so that global configuration can be
 defined in common.yaml and role/host specific configuration merged with the
 global section.
 
-##Limitations
+## Limitations
 
 1. Keys are implicitly added on the monitor, ergo all keys need to be defined
    on the monitor node
