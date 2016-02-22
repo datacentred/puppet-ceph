@@ -9,6 +9,8 @@
 3. [Setup - The basics of getting started with ceph](#setup)
     * [Setup Requirements](#setup-requirements)
 4. [Usage](#usage)
+    * [Basic Usage](#basic-usage)
+    * [Advanced Usage](#advanced-usage)
 5. [Limitations](#limitations)
 
 ## Overview
@@ -51,8 +53,9 @@ Exec {
 
 ## Usage
 
-The module is exlusively for use with hiera to segregate data from code thus
-all you need in your manifests is:
+### Basic Usage
+
+To create a simple all in one server for test and development work:
 
 ```puppet
 include ::ceph
@@ -111,9 +114,215 @@ ceph::disks:
     fstype: 'xfs'
 ```
 
+### Advanced Usage
+
 It is recommended to enable deep merging so that global configuration can be
 defined in common.yaml and role/host specific configuration merged with the
-global section.
+global section.  A typical production deployment may look similar to the
+following:
+
+```yaml
+---
+### /var/lib/hiera/module/ceph.yaml
+
+# Merge configuration based on role
+ceph::conf_merge: true
+
+# Global configuration for all nodes
+ceph::conf:
+  global:
+    fsid: '62ed9bd6-adf4-11e4-8fb5-3c970ebb2b86'
+    mon initial members: 'mon0,mon1,mon2'
+    mon host: '10.0.0.2,10.0.0.3,10.0.0.4'
+    auth supported: 'cephx'
+    public network: '10.0.0.0/16'
+    cluster network: '10.0.0.0/16'
+
+# Merge keys based on role
+ceph::keys_merge: true
+```
+
+```yaml
+---
+### /var/lib/hiera/role/ceph-mon.yaml
+
+# Install a monitor
+ceph::mon: true
+
+# Monitor specific configuration
+ceph::conf:
+  mon:
+    mon compact on start: 'true'
+    mon compact on trim: 'true'
+
+# All the static keys on the system
+ceph::keys:
+  /etc/ceph/ceph.client.admin.keyring:
+    user: 'client.admin'
+    key: "%{hiera('ceph_key_client_admin')}"
+    caps_mon: 'allow *'
+    caps_osd: 'allow *'
+    caps_mds: 'allow'
+  /var/lib/ceph/bootstrap-osd/ceph.keyring:
+    user: 'client.bootstrap-osd'
+    key: "%{hiera('ceph_key_bootstrap_osd')}"
+    caps_mon: 'allow profile bootstrap-osd'
+  /var/lib/ceph/bootstrap-mds/ceph.keyring:
+    user: 'client.bootstrap-mds'
+    key: "%{hiera('ceph_key_bootstrap_mds')}"
+    caps_mon: 'allow profile bootstrap-mds'
+  /etc/ceph/ceph.client.radosgw.rgw0.keyring:
+    user: 'client.radosgw.rgw0'
+    key: "%{hiera('ceph_key_client_radosgw_rgw0')}"
+    caps_mon: 'allow rwx'
+    caps_osd: 'allow rwx'
+  /etc/ceph/ceph.client.glance.keyring:
+    user: 'client.glance'
+    key: "%{hiera('ceph_key_client_glance')}"
+    caps_mon: 'allow r'
+    caps_osd: 'allow class-read object_prefix rbd_children, allow rwx pool=glance'
+  /etc/ceph/ceph.client.cinder.keyring:
+    user: 'client.cinder'
+    key: "%{hiera('ceph_key_client_cinder')}"
+    caps_mon: 'allow r'
+    caps_osd: 'allow class-read object_prefix rbd_children, allow rx pool=glance, allow rwx pool=cinder'
+```
+
+```yaml
+---
+### /var/lib/hiera/role/ceph-osd.yaml
+
+# Create OSDs
+ceph::osd: true
+
+# OSD specific configuration
+ceph::conf:
+  osd:
+    filestore xattr use omap: 'true'
+    osd journal size: '10000'
+    osd mount options xfs: 'noatime,inode64,logbsize=256k,logbufs=8'
+    osd crush location hook: '/usr/local/bin/location_hook.py'
+    osd recovery max active: '1'
+    osd max backfills: '1'
+    osd recovery threads: '1'
+    osd recovery op priority: '1'
+
+# OSD specific static keys
+ceph::keys:
+  /etc/ceph/ceph.client.admin.keyring:
+    user: 'client.admin'
+    key: "%{hiera('ceph_key_client_admin')}"
+  /var/lib/ceph/bootstrap-osd/ceph.keyring:
+    user: 'client.bootstrap-osd'
+    key: "%{hiera('ceph_key_bootstrap_osd')}"
+```
+
+```yaml
+---
+### /var/lib/hiera/productname/X10DRC-LN4+.yaml
+
+# Product specific OSD definitions
+ceph::disks:
+  Slot 01/Slot 01:
+    fstype: 'xfs'
+  Slot 02/Slot 02:
+    fstype: 'xfs'
+  Slot 03/Slot 03:
+    fstype: 'xfs'
+  Slot 04/Slot 04:
+    fstype: 'xfs'
+  Slot 05/Slot 05:
+    fstype: 'xfs'
+  Slot 06/Slot 06:
+    fstype: 'xfs'
+  Slot 07/Slot 07:
+    fstype: 'xfs'
+  Slot 08/Slot 08:
+    fstype: 'xfs'
+  Slot 09/Slot 09:
+    fstype: 'xfs'
+  Slot 10/Slot 10:
+    fstype: 'xfs'
+  Slot 11/Slot 11:
+    fstype: 'xfs'
+  Slot 12/Slot 12:
+    fstype: 'xfs'
+```
+
+```yaml
+---
+### /var/lib/hiera/role/ceph-rgw.yaml
+
+# Create a Rados gateway
+ceph::rgw: true
+ceph::rgw_id: "radosgw.%{hostname}"
+
+# Rados gateway specific configuration
+ceph::conf:
+  client.radosgw.%{hostname}:
+    host: "%{hostname}"
+    keyring: "/etc/ceph/ceph.client.radosgw.%{hostname}.keyring"
+    rgw enable usage log: 'true'
+    rgw thread pool size: '4096'
+    rgw dns name: 'storage.example.com'
+    rgw socket path: "/var/run/ceph/ceph.client.radosgw.%{hostname}.fastcgi.sock"
+    rgw keystone url: 'https://keystone.example.com:35357'
+    rgw keystone admin token: 'dab8928d-1787-4d73-b3e9-1184a4aeffcb'
+    rgw keystone accepted roles: '_member_,admin'
+    rgw relaxed s3 bucket names: 'true'
+
+# Rados gateway specific static keys
+ceph::keys:
+  /etc/ceph/ceph.client.admin.keyring:
+    user: 'client.admin'
+    key: "%{hiera('ceph_key_client_admin')}"
+```
+
+```yaml
+---
+### /var/lib/hiera/node/rgw0.yaml
+
+# Rados gateway node specific configuration
+ceph::keys:
+  /etc/ceph/ceph.client.radosgw.rgw0.keyring:
+    user: 'client.radosgw.rgw0'
+    key: "%{hiera('ceph_key_client_radosgw_rgw0')}"
+```
+
+```yaml
+---
+### /var/lib/hiera/role/openstack-controller.yaml
+
+# OpenStack controller specific static keys
+ceph::keys:
+  /etc/ceph/ceph.client.cinder.keyring:
+    user: 'client.cinder'
+    key: "%{hiera('ceph_key_client_cinder')}"
+  /etc/ceph/ceph.client.glance.keyring:
+    user: 'client.glance'
+    key: "%{hiera('ceph_key_client_glance')}"
+```
+
+```yaml
+---
+### /var/lib/hiera/role/openstack-compute.yaml
+
+# OpenStack compute specific configuration
+ceph::conf:
+  client:
+    rbd cache: 'true'
+    rbd cache size: '268435456'
+    rbd cache max dirty: '201326592'
+    rbd cache dirty target: '134217728'
+    rbd cache max dirty age: '2'
+    rbd cache writethrough until flush: 'true'
+
+# OpenStack compute specific static keys
+ceph::keys:
+  /etc/ceph/ceph.client.cinder.keyring:
+    user: 'client.cinder'
+    key: "%{hiera('ceph_key_client_cinder')}"
+```
 
 ## Limitations
 
