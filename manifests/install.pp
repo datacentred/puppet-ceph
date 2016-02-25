@@ -8,4 +8,5 @@ class ceph::install {
     ensure => installed,
   }
 
+  ensure_packages($::ceph::prerequisites)
 }

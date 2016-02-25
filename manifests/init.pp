@@ -45,6 +45,9 @@
 # [*disks*]
 #   Hash of osd resources to create
 #
+# [*prerequisites*]
+#   List for packages required for operation
+#
 class ceph (
   # Install component
   $mon = false,
@@ -122,6 +125,7 @@ class ceph (
   # Parameters
   $service_provider = $::ceph::params::service_provider,
   $radosgw_package = $::ceph::params::radosgw_package,
+  $prerequisites = $::ceph::params::prerequisites,
 ) inherits ceph::params {
 
   contain ::ceph::repo
