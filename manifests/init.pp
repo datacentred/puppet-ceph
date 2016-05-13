@@ -22,6 +22,9 @@
 # [*repo_release*]
 #   OS release version.  Only LTS is supported
 #
+# [*package_version*]
+#   version of package to ensure, defaults to installed
+#
 # [*conf_merge*]
 #   Ignore the value bound to ceph::conf and perform a
 #   hiera_hash call to merge config fragments tegether
@@ -57,6 +60,7 @@ class ceph (
   $manage_repo = true,
   $repo_version = 'hammer',
   $repo_release = 'trusty',
+  $package_version = 'installed',
   # Global configuration
   $conf_merge = false,
   $conf = {
