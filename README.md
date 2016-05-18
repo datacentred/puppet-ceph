@@ -327,5 +327,5 @@ ceph::keys:
 ## Limitations
 
 1. Keys are implicitly added on the monitor, ergo all keys need to be defined
-   on the monitor node
-2. For use with ceph 0.94 (Hammer) or lower
+   on the monitor node.
+2. For use with ceph 1.02 (Jewel) or lower.
