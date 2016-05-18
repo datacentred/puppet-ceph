@@ -45,12 +45,23 @@ class ceph::rgw {
         }
       }
       default: {
-        service { 'radosgw':
-          ensure   => running,
-          provider => 'init',
-          start    => '/etc/init.d/ceph-radosgw start',
-          status   => '/etc/init.d/ceph-radosgw status',
-          stop     => '/etc/init.d/ceph-radosgw stop',
+        case $::ceph::service_provider {
+          'systemd': {
+            service { 'radosgw':
+              name     => "ceph-radosgw@${::ceph::rgw_id}",
+              ensure   => running,
+              provider => 'systemd',
+            }
+          }
+          default: {
+            service { 'radosgw':
+              ensure   => running,
+              provider => 'init',
+              start    => '/etc/init.d/ceph-radosgw start',
+              status   => '/etc/init.d/ceph-radosgw status' ,
+              stop     => '/etc/init.d/ceph-radosgw stop',
+            }
+          }
         }
       }
     }
