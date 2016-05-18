@@ -68,8 +68,8 @@ class ceph::mon {
         case $::ceph::service_provider {
           'systemd': {
             service { 'ceph-mon':
-              name     =>  "ceph-mon@${::ceph::mon_id}",
               ensure   => running,
+              name     =>  "ceph-mon@${::ceph::mon_id}",
               provider => 'systemd',
             }
           }
