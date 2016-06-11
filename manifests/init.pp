@@ -54,9 +54,9 @@ class ceph (
   $osd = false,
   $rgw = false,
   # Package management
-  $manage_repo = true,
-  $repo_version = 'hammer',
-  $repo_release = 'trusty',
+  $manage_repo = $::ceph::params::manage_repo,
+  $repo_version = $::ceph::params::repo_version,
+  $repo_release = $::ceph::params::repo_release,
   # Global configuration
   $conf_merge = false,
   $conf = {

@@ -4,14 +4,28 @@
 #
 class ceph::params {
 
+  $repo_version = 'jewel'
+
   case $::operatingsystem {
     'Ubuntu': {
-      $service_provider = 'upstart'
+      if ( $::lsbmajdistrelease + 0 ) >= 16.04 {
+        $service_provider = 'systemd'
+      } else {
+        $service_provider = 'upstart'
+      }
+      $manage_repo = true
+      $repo_release = $::lsbdistcodename
       $radosgw_package = 'radosgw'
       $prerequisites = []
     }
     'RedHat', 'Centos': {
-      $service_provider = 'sysvinit'
+      if ( $::lsbmajdistrelease + 0 ) >= 7 {
+        $service_provider = 'systemd'
+      } else {
+        $service_provider = 'sysvinit'
+      }
+      $manage_repo = false
+      $repo_release = undef
       $radosgw_package = 'ceph-radosgw'
       # Broken on centos with 0.94.6
       $prerequisites = [

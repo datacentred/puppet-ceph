@@ -34,8 +34,15 @@ class ceph::rgw {
 
     Service['radosgw']
 
-    case $::operatingsystem {
-      'Ubuntu': {
+    case $::ceph::service_provider {
+      'systemd': {
+        service { 'radosgw':
+          ensure   => running,
+          name     => "ceph-radosgw@${::ceph::rgw_id}",
+          provider => 'systemd',
+        }
+      }
+      'upstart': {
         service { 'radosgw':
           ensure   => running,
           provider => 'init',
@@ -44,7 +51,7 @@ class ceph::rgw {
           stop     => "stop radosgw id=${::ceph::rgw_id}",
         }
       }
-      default: {
+      'sysvinit': {
         service { 'radosgw':
           ensure   => running,
           provider => 'init',
@@ -52,6 +59,9 @@ class ceph::rgw {
           status   => '/etc/init.d/ceph-radosgw status',
           stop     => '/etc/init.d/ceph-radosgw stop',
         }
+      }
+      default: {
+        err("Unsupported service provider '${ceph::service_provider}'")
       }
     }
 
