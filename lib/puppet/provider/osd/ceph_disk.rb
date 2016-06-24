@@ -35,12 +35,14 @@ private
 
   # Redirect the request to the correct SCSI backend
   # Params:
-  # +indetifier+:: SCSI address or enclosure slot number
+  # +identifier+:: SCSI address, enclosure slot number, or /dev device name
   def identifier_to_dev(identifier)
     if identifier.start_with?('Slot')
       enclosure_slot_to_dev(identifier)
-    else
+    elsif identifier =~ /^\d+:\d+:\d+:\d+/
       scsi_address_to_dev(identifier)
+    else
+      identifier
     end
   end
 
