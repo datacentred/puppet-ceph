@@ -1,6 +1,6 @@
-<% @_conf.each do |section, setting_value| -%>
+<% @_conf.sort.map do |section, setting_value| -%>
 [<%= section %>]
-<% setting_value.each do |setting, value| -%>
+<% setting_value.sort.map do |setting, value| -%>
   <%= setting %> = <%= value %>
 <% end -%>
 <% end -%>
