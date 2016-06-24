@@ -4,7 +4,7 @@ class ceph::install {
 
   assert_private()
 
-  package { 'ceph':
+  package { 'ceph-common':
     ensure => installed,
   }
 
