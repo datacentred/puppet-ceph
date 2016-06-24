@@ -37,6 +37,14 @@ can be provisioned with 'Slot 01/Slot 12' which directly correlates with slot na
 found in sysfs.  The two addressing modes can be used interchangably thus
 configuration like 'Slot 01/2:0:0:0' is permissible.
 
+Finally, /dev device names can be used when needed, though they should
+not be used for physical SATA/SAS disks running on metal.  This handles
+problems such as NVMe PCIe SSD's (which do not have SCSI addresses)
+and differences in assigned disk SCSI addresses between vagrant providers.
+Thus a physical disk with an NVMe journal can be provisioned with
+'0:0:0:1/nvme0n1', and a vagrant second disk can be 'sdb/sdb' to ensure
+it would work in either VirtualBox or VMware.
+
 ## Setup
 
 ### Setup Requirements
