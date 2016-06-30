@@ -48,14 +48,21 @@ private
   # Params:
   # +dev+:: Device short name e.g. sdd
   def device_prepared?(dev)
-    begin
-      partitions = Dir.entries('/dev/disk/by-parttypeuuid').select { |x| not x.start_with? '.' }
-    rescue Errno::ENOENT
-      return false
+    if Dir.exists? '/dev/disk/by-parttypeuuid'
+      begin
+        partitions = Dir.entries('/dev/disk/by-parttypeuuid').select { |x| not x.start_with? '.' }
+      rescue Errno::ENOENT
+        return false
+      end
+    else
+      partitions = Puppet::Util::Execution.execute('bash -c "fdisk -l | grep -E \'^/dev/\'"').split(/\n/)
     end
     partitions.each do |partition|
       if partition.start_with? OSD_UUID
         target = File.readlink "/dev/disk/by-parttypeuuid/#{partition}"
+        return true if /#{dev}\d+$/ =~ target
+      elsif partition.end_with? 'Ceph OSD'
+        target = partition.split(/ /)[0]
         return true if /#{dev}\d+$/ =~ target
       end
     end
