@@ -55,14 +55,15 @@ private
         return false
       end
     else
-      partitions = Puppet::Util::Execution.execute('bash -c "fdisk -l | grep -E \'^/dev/\'"').split(/\n/)
+      partitions = Puppet::Util::Execution.execute('lsblk -o parttype,kname').split(/\n/)
     end
     partitions.each do |partition|
       if partition.start_with? OSD_UUID
-        target = File.readlink "/dev/disk/by-parttypeuuid/#{partition}"
-        return true if /#{dev}\d+$/ =~ target
-      elsif partition.end_with? 'Ceph OSD'
-        target = partition.split(/ /)[0]
+	if Dir.exists? '/dev/disk/by-parttypeuuid'
+          target = File.readlink "/dev/disk/by-parttypeuuid/#{partition}"
+	else
+	  target = partition
+	end
         return true if /#{dev}\d+$/ =~ target
       end
     end
