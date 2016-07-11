@@ -8,9 +8,22 @@ class ceph::mon {
 
   if $::ceph::mon {
 
+    $_owner = $::ceph::repo_version ? {
+      'jewel' => 'ceph',
+      default => 'root',
+    }
+
     # Create the monitor filesystem
     exec { "ceph-mon --mkfs -i ${::ceph::mon_id} --key ${::ceph::mon_key}":
       creates => "/var/lib/ceph/mon/ceph-${::ceph::mon_id}",
+    } ->
+
+    # Make sure monitor fs ownership is correct
+    file { "/var/lib/ceph/mon/ceph-${::ceph::mon_id}":
+      ensure  => directory,
+      recurse => true,
+      owner   => $_owner,
+      group   => $_owner,
     } ->
 
     # Enable managament by init/upstart
@@ -19,8 +32,8 @@ class ceph::mon {
       "/var/lib/ceph/mon/ceph-${::ceph::mon_id}/${ceph::service_provider}",
     ]:
       ensure => file,
-      owner  => 'root',
-      group  => 'root',
+      owner  => $_owner,
+      group  => $_owner,
       mode   => '0644',
     } ->
 
@@ -41,8 +54,16 @@ class ceph::mon {
     # Finally start the service
     Service['ceph-mon']
 
-    case $::operatingsystem {
-      'Ubuntu': {
+    case $::ceph::service_provider {
+      'systemd': {
+        service { 'ceph-mon':
+          ensure   => running,
+          name     => "ceph-mon@${::ceph::mon_id}",
+          provider => 'systemd',
+          enable   => true,
+        }
+      }
+      'upstart': {
         service { 'ceph-mon':
           ensure   => running,
           provider => 'init',
@@ -51,7 +72,7 @@ class ceph::mon {
           stop     => "stop ceph-mon id=${::ceph::mon_id}",
         }
       }
-      default: {
+      'sysvinit': {
         service { 'ceph-mon':
           ensure   => running,
           provider => 'init',
@@ -59,6 +80,9 @@ class ceph::mon {
           status   => "/etc/init.d/ceph status mon.${::ceph::mon_id}",
           stop     => "/etc/init.d/ceph stop mon.${::ceph::mon_id}",
         }
+      }
+      default: {
+        err("Unsupported service provider '${ceph::service_provider}'")
       }
     }
 
