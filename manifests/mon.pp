@@ -60,6 +60,7 @@ class ceph::mon {
           ensure   => running,
           name     => "ceph-mon@${::ceph::mon_id}",
           provider => 'systemd',
+          enable   => true,
         }
       }
       'upstart': {
