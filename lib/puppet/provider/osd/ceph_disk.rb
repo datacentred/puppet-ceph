@@ -55,16 +55,14 @@ private
         return false
       end
     else
-      partitions = Puppet::Util::Execution.execute('lsblk -o parttype,kname').split(/\n/)
+      partitions = Puppet::Util::Execution.execute('/sbin/blkid').split(/\n/)
     end
     partitions.each do |partition|
-      if partition.start_with? OSD_UUID
-	if Dir.exists? '/dev/disk/by-parttypeuuid'
-          target = File.readlink "/dev/disk/by-parttypeuuid/#{partition}"
-	else
-	  target = partition
-	end
+      if Dir.exists? '/dev/disk/by-parttypeuuid' and partition.start_with? OSD_UUID
+        target = File.readlink "/dev/disk/by-parttypeuuid/#{partition}"
         return true if /#{dev}\d+$/ =~ target
+      elsif partition.include? "ceph data"
+        return true if /#{dev}\d+:/ =~ partition
       end
     end
     false
