@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rake'
-gem 'puppet', '3.8.5'
+gem 'puppet'
 gem 'puppet-lint'
 gem 'rspec-puppet'
 gem 'beaker'
