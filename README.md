@@ -6,12 +6,13 @@
 
 1. [Overview](#overview)
 2. [Module Description](#module-description)
-3. [Setup - The basics of getting started with ceph](#setup)
+3. [Compatibility Matrix](#compatibility-matrix)
+4. [Setup - The basics of getting started with ceph](#setup)
     * [Setup Requirements](#setup-requirements)
-4. [Usage](#usage)
+5. [Usage](#usage)
     * [Basic Usage](#basic-usage)
     * [Advanced Usage](#advanced-usage)
-5. [Limitations](#limitations)
+6. [Limitations](#limitations)
 
 ## Overview
 
@@ -36,6 +37,16 @@ to the same enumeration problem as /dev device names.  In these cases the device
 can be provisioned with 'Slot 01/Slot 12' which directly correlates with slot names
 found in sysfs.  The two addressing modes can be used interchangably thus
 configuration like 'Slot 01/2:0:0:0' is permissible.
+
+## Compatibility Matrix
+
+| Version | Operating System       | Ceph | Puppet |
+| ------- | ---------------------- | -----| ------ |
+| 1.0.x   | Ubuntu 14.04           | 0.94 | 3      |
+| 1.1.x   | Ubuntu 14.04           | 0.94 | 3      |
+| 1.2.x   | Ubuntu 14.04           | 0.94 | 3      |
+| 1.3.x   | Ubuntu 14.04, Centos 7 | 0.94 | 3      |
+| 1.4.x   | Ubuntu 14.04, Centos 7 | 9    | 3, 4   |
 
 ## Setup
 
@@ -328,4 +339,3 @@ ceph::keys:
 
 1. Keys are implicitly added on the monitor, ergo all keys need to be defined
    on the monitor node
-2. For use with ceph 9.0.0 (Infernalis)
