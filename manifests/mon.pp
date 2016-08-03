@@ -11,6 +11,8 @@ class ceph::mon {
     # Create the monitor filesystem
     exec { "ceph-mon --mkfs -i ${::ceph::mon_id} --key ${::ceph::mon_key}":
       creates => "/var/lib/ceph/mon/ceph-${::ceph::mon_id}",
+      user  => $::ceph::user,
+      group => $::ceph::group,
     } ->
 
     # Enable managament by init/upstart
@@ -19,8 +21,8 @@ class ceph::mon {
       "/var/lib/ceph/mon/ceph-${::ceph::mon_id}/${ceph::service_provider}",
     ]:
       ensure => file,
-      owner  => 'root',
-      group  => 'root',
+      owner  => $::ceph::user,
+      group  => $::ceph::group,
       mode   => '0644',
     } ->
 
@@ -41,24 +43,27 @@ class ceph::mon {
     # Finally start the service
     Service['ceph-mon']
 
-    case $::operatingsystem {
-      'Ubuntu': {
+    case $::ceph::service_provider {
+      'debian': {
         service { 'ceph-mon':
           ensure   => running,
-          provider => 'init',
+          provider => 'debian',
           start    => "start ceph-mon id=${::ceph::mon_id}",
           status   => "status ceph-mon id=${::ceph::mon_id}",
           stop     => "stop ceph-mon id=${::ceph::mon_id}",
         }
       }
-      default: {
+      'redhat': {
         service { 'ceph-mon':
           ensure   => running,
-          provider => 'init',
-          start    => "/etc/init.d/ceph start mon.${::ceph::mon_id}",
-          status   => "/etc/init.d/ceph status mon.${::ceph::mon_id}",
-          stop     => "/etc/init.d/ceph stop mon.${::ceph::mon_id}",
+          provider => 'redhat',
+          start    => "systemctl start ceph-mon@${::ceph::mon_id}",
+          status   => "systemctl status ceph-mon@${::ceph::mon_id}",
+          stop     => "systemctl stop ceph-mon@${::ceph::mon_id}",
         }
+      }
+      default: {
+        crit('Unsupported service provider')
       }
     }
 

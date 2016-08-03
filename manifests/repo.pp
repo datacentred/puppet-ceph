@@ -14,13 +14,19 @@ class ceph::repo {
         include ::apt
 
         apt::source { 'ceph':
-          location => "http://eu.ceph.com/debian-${::ceph::repo_version}",
+          location => "http://${::ceph::repo_mirror}/debian-${::ceph::repo_version}",
           release  => $::ceph::repo_release,
           repos    => 'main',
           key      => {
             'id'     => '08B73419AC32B4E966C1A330E84AC2C0460F3994',
             'source' => 'https://git.ceph.com/release.asc',
           },
+        }
+
+        apt::pin { 'ceph':
+          packages => '*',
+          origin   => $::ceph::repo_mirror,
+          priority => '600',
         }
 
         Class['::apt'] -> Package <||>

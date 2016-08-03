@@ -39,8 +39,8 @@ define ceph::keyring (
   $caps_mon = undef,
   $caps_mds = undef,
   $caps_osd = undef,
-  $owner = 'root',
-  $group = 'root',
+  $owner = 'ceph',
+  $group = 'ceph',
   $mode = '0644',
 ) {
 
@@ -48,8 +48,6 @@ define ceph::keyring (
 
   file { $name:
     ensure  => file,
-    owner   => $owner,
-    group   => $group,
     mode    => $mode,
     content => template('ceph/keyring.erb'),
   }

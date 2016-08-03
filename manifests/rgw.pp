@@ -34,24 +34,27 @@ class ceph::rgw {
 
     Service['radosgw']
 
-    case $::operatingsystem {
-      'Ubuntu': {
+    case $::ceph::service_provider {
+      'debian': {
         service { 'radosgw':
           ensure   => running,
-          provider => 'init',
+          provider => 'debian',
           start    => "start radosgw id=${::ceph::rgw_id}",
           status   => "status radosgw id=${::ceph::rgw_id}",
           stop     => "stop radosgw id=${::ceph::rgw_id}",
         }
       }
-      default: {
+      'redhat': {
         service { 'radosgw':
           ensure   => running,
-          provider => 'init',
-          start    => '/etc/init.d/ceph-radosgw start',
-          status   => '/etc/init.d/ceph-radosgw status',
-          stop     => '/etc/init.d/ceph-radosgw stop',
+          provider => 'redhat',
+          start    => "systemctl start ceph-radosgw@${::ceph::rgw_id}",
+          status   => "systemctl status ceph-radosgw@${::ceph::rgw_id}",
+          stop     => "systemctl stop ceph-radosgw@${::ceph::rgw_id}",
         }
+      }
+      default: {
+        crit('Unsupported service provider')
       }
     }
 

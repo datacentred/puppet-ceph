@@ -16,6 +16,9 @@
 # [*manage_repo*]
 #   Whether this module should install custom repos
 #
+# [*repo_mirror*]
+#   Local mirror to source the repo from
+#
 # [*repo_version*]
 #   Ceph version to install the repo for
 #
@@ -55,8 +58,12 @@ class ceph (
   $rgw = false,
   # Package management
   $manage_repo = true,
-  $repo_version = 'hammer',
+  $repo_mirror = 'eu.ceph.com',
+  $repo_version = 'infernalis',
   $repo_release = 'trusty',
+  # User management
+  $user = 'ceph',
+  $group = 'ceph',
   # Global configuration
   $conf_merge = false,
   $conf = {

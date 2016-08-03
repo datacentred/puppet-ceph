@@ -2,8 +2,8 @@ rvm:
 - 1.9.3
 script:
 - bundle exec rake validate
-- BEAKER_set=openstack-ubuntu BEAKER_debug=yes bundle exec rake beaker
-- BEAKER_set=openstack-centos BEAKER_debug=yes bundle exec rake beaker
+- PUPPET_INSTALL_TYPE=foss BEAKER_set=openstack-ubuntu-trusty BEAKER_debug=yes bundle exec rake beaker
+- PUPPET_INSTALL_TYPE=foss BEAKER_set=openstack-centos-7 BEAKER_debug=yes bundle exec rake beaker
 env:
   global:
   - secure: yWy9ZWO2DXzSf9yOdn5gRvISOiybP/AoALnoIiHzpkhXm2O/a9LfO4d+lxK1GqlxxIVe/fpX7HXTLeio4xrrDtA5YGwoqWkx2Sb+sgB4p7RiX+Fow1LujX7I+jDkxspioCUJbgk6uYGzPMPh7BESl5kMTL+iSNWm6ZJlY3HqofyfMgQE+q3cv/QKElrmHaUuYENex6gEvxlXzLkztimtaMjDAQUeUM0raFwgtmmS//pfhVZoHrzNQs5QfemdlldXdLm9rppQ4SgkFKpf2TnLDX9+353azTb3ntWxzNO6eiwdDW8irsqOliLjK+9Kk2/W97UanxX4qOzKdRLbPpJJXmrgEiXIEHI9dcKnyW7oiczz1AOqO7g3DzN0HAex3Bk8C0vALWYBkaf3dVYmlZKg2d7LSfL0ufQtiPhS/JB3mx6cDFpAJgrLxLcncjcyvgNlLeeNy6FLpDO5gQmZBypYNFl7y0/LuWrXyGS72naWNZaV8JoKe0ydbF/hqX5I5gihY41OXNjLDXfqGnglHUJ3d6pYAp4pD3b7JjpoAx3oCRUdmsgmwvhyvro4rp+g50Ym6s2eymjYskUUn5SjzgmKQZXXVznXFrpggqaRZQL3tpsYtnHJkkO720uKnTXS3Lxl9jS0HeyTutbtzQi2J0fgvp2EBtVRk+DYjp7tiCEp2Ik=

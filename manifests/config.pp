@@ -14,8 +14,8 @@ class ceph::config {
 
   file { '/etc/ceph/ceph.conf':
     ensure  => file,
-    owner   => 'root',
-    group   => 'root',
+    owner   => 'ceph',
+    group   => 'ceph',
     mode    => '0644',
     content => template('ceph/ceph.conf.erb'),
   }
