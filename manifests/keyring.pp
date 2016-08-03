@@ -46,6 +46,12 @@ define ceph::keyring (
 
   assert_private()
 
+  if $name =~ /^\/var\/lib\/ceph/ {
+    File {
+      seltype => $::ceph::seltype,
+    }
+  }
+
   file { $name:
     ensure  => file,
     mode    => $mode,

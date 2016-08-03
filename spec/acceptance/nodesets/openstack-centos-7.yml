@@ -21,4 +21,4 @@ HOSTS:
         size: 1000
 CONFIG:
   type: foss
-  openstack_network: beaker
+  openstack_network: spjmurray-beaker

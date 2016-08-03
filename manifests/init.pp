@@ -25,6 +25,15 @@
 # [*repo_release*]
 #   OS release version.  Only LTS is supported
 #
+# [*user*]
+#   Username ceph runs as
+#
+# [*group*]
+#   Group ceph runs as
+#
+# [*seltype*]
+#   SELinux type for var data
+#
 # [*conf_merge*]
 #   Ignore the value bound to ceph::conf and perform a
 #   hiera_hash call to merge config fragments tegether
@@ -64,6 +73,8 @@ class ceph (
   # User management
   $user = 'ceph',
   $group = 'ceph',
+  # Security
+  $seltype = 'ceph_var_lib_t',
   # Global configuration
   $conf_merge = false,
   $conf = {

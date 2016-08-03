@@ -20,10 +20,11 @@ class ceph::mon {
       "/var/lib/ceph/mon/ceph-${::ceph::mon_id}/done",
       "/var/lib/ceph/mon/ceph-${::ceph::mon_id}/${ceph::service_provider}",
     ]:
-      ensure => file,
-      owner  => $::ceph::user,
-      group  => $::ceph::group,
-      mode   => '0644',
+      ensure  => file,
+      owner   => $::ceph::user,
+      group   => $::ceph::group,
+      mode    => '0644',
+      seltype => $::ceph::seltype,
     } ->
 
     # Prevent ceph-create-keys from adding in defaults on monitor startup

@@ -16,20 +16,22 @@ class ceph::rgw {
       '/var/lib/ceph/radosgw',
       "/var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}",
     ]:
-      ensure => directory,
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0755',
+      ensure  => directory,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0755',
+      seltype => $::ceph::seltype,
     } ->
 
     file { [
       "/var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}/done",
       "/var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}/${ceph::service_provider}",
     ]:
-      ensure => file,
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0644',
+      ensure  => file,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      seltype => $::ceph::seltype,
     } ->
 
     Service['radosgw']
