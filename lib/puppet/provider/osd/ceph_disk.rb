@@ -4,7 +4,8 @@ Puppet::Type.type(:osd).provide(:ceph_disk) do
 
 private
 
-  OSD_UUID = '4fbd7e29-9d25-41b8-afd0-062c0ceff05d'
+  # Support both raw (062c0ceff05d) and encrypted (35865ceff05d) partitions
+  OSD_UUID = '4fbd7e29-9d25-41b8-afd0-'
 
   # Translate a scsi address into a device node
   # Params:
@@ -66,11 +67,15 @@ public
 
   # Create the resource
   def create
-    command = "ceph-disk prepare --fs-type #{@fstype} /dev/#{@osd_dev} /dev/#{@journal_dev}"
+    dmcrypt_opts = ""
+    if resource[:dmcrypt]
+      dmcrypt_opts = "--dmcrypt --dmcrypt-key-dir '#{resource[:dmcrypt_key_dir]}'"
+    end
+    command = "ceph-disk prepare #{dmcrypt_opts} --fs-type #{@fstype} /dev/#{@osd_dev} /dev/#{@journal_dev}"
     Puppet::Util::Execution.execute(command)
     # Upstart automatically does this for us via udev events
     if :operatingsystem != 'Ubuntu'
-      command = "ceph-disk activate /dev/#{@osd_dev}1"
+      command = "ceph-disk activate #{dmcrypt_opts} /dev/#{@osd_dev}1"
       Puppet::Util::Execution.execute(command)
     end
   end
