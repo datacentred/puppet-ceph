@@ -1,6 +1,7 @@
 rvm:
 - 2.3.1
 before_script:
+- bundle exec rake lint
 - bundle exec rake validate
 script:
 - bundle exec rake beaker

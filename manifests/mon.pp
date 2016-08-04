@@ -11,8 +11,8 @@ class ceph::mon {
     # Create the monitor filesystem
     exec { "ceph-mon --mkfs -i ${::ceph::mon_id} --key ${::ceph::mon_key}":
       creates => "/var/lib/ceph/mon/ceph-${::ceph::mon_id}",
-      user  => $::ceph::user,
-      group => $::ceph::group,
+      user    => $::ceph::user,
+      group   => $::ceph::group,
     } ->
 
     # Enable managament by init/upstart
@@ -24,6 +24,7 @@ class ceph::mon {
       owner   => $::ceph::user,
       group   => $::ceph::group,
       mode    => '0644',
+      # Note: puppet appears to run matchpathcon before ceph is installed and breaks idempotency
       seltype => $::ceph::seltype,
     } ->
 

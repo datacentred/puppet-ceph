@@ -46,6 +46,7 @@ define ceph::keyring (
 
   assert_private()
 
+  # Note: puppet appears to run matchpathcon before ceph is installed and breaks idempotency
   if $name =~ /^\/var\/lib\/ceph/ {
     File {
       seltype => $::ceph::seltype,
