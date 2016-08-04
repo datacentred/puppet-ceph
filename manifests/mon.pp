@@ -9,17 +9,15 @@ class ceph::mon {
   if $::ceph::mon {
 
     # Create the monitor filesystem
-    exec { "ceph-mon --mkfs -i ${::ceph::mon_id} --key ${::ceph::mon_key}":
+    exec { 'ceph-mon create':
+      command => "ceph-mon --mkfs -i ${::ceph::mon_id} --key ${::ceph::mon_key}",
       creates => "/var/lib/ceph/mon/ceph-${::ceph::mon_id}",
       user    => $::ceph::user,
       group   => $::ceph::group,
     } ->
 
     # Enable managament by init/upstart
-    file { [
-      "/var/lib/ceph/mon/ceph-${::ceph::mon_id}/done",
-      "/var/lib/ceph/mon/ceph-${::ceph::mon_id}/${ceph::service_provider}",
-    ]:
+    file { "/var/lib/ceph/mon/ceph-${::ceph::mon_id}/done":
       ensure  => file,
       owner   => $::ceph::user,
       group   => $::ceph::group,
@@ -43,25 +41,34 @@ class ceph::mon {
     } ->
 
     # Finally start the service
-    Service['ceph-mon']
+    Exec['ceph-mon start']
 
     case $::ceph::service_provider {
-      'debian': {
-        service { 'ceph-mon':
-          ensure   => running,
-          provider => 'debian',
-          start    => "start ceph-mon id=${::ceph::mon_id}",
-          status   => "status ceph-mon id=${::ceph::mon_id}",
-          stop     => "stop ceph-mon id=${::ceph::mon_id}",
+      'upstart': {
+        Exec['ceph-mon create'] ->
+
+        file { "/var/lib/ceph/mon/ceph-${::ceph::mon_id}/upstart":
+          ensure  => file,
+          owner   => $::ceph::user,
+          group   => $::ceph::group,
+          mode    => '0644',
+          # Note: puppet appears to run matchpathcon before ceph is installed and breaks idempotency
+          seltype => $::ceph::seltype,
+        } ->
+
+        exec { 'ceph-mon start':
+          command => "start ceph-mon id=${::ceph::mon_id}",
+          unless  => "status ceph-mon id=${::ceph::mon_id}",
         }
       }
-      'redhat': {
-        service { 'ceph-mon':
-          ensure   => running,
-          provider => 'redhat',
-          start    => "systemctl start ceph-mon@${::ceph::mon_id}",
-          status   => "systemctl status ceph-mon@${::ceph::mon_id}",
-          stop     => "systemctl stop ceph-mon@${::ceph::mon_id}",
+      'systemd': {
+        exec { "systemctl enable ceph-mon@${::ceph::mon_id}":
+          unless => "systemctl is-enabled ceph-mon@${::ceph::mon_id}",
+        } ->
+
+        exec { 'ceph-mon start':
+          command => "systemctl start ceph-mon@${::ceph::mon_id}",
+          unless  => "systemctl status ceph-mon@${::ceph::mon_id}",
         }
       }
       default: {

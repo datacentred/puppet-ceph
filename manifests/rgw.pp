@@ -23,10 +23,7 @@ class ceph::rgw {
       seltype => $::ceph::seltype,
     } ->
 
-    file { [
-      "/var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}/done",
-      "/var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}/${ceph::service_provider}",
-    ]:
+    file { "/var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}/done":
       ensure  => file,
       owner   => 'root',
       group   => 'root',
@@ -34,25 +31,31 @@ class ceph::rgw {
       seltype => $::ceph::seltype,
     } ->
 
-    Service['radosgw']
+    Exec['radosgw start']
 
     case $::ceph::service_provider {
-      'debian': {
-        service { 'radosgw':
-          ensure   => running,
-          provider => 'debian',
-          start    => "start radosgw id=${::ceph::rgw_id}",
-          status   => "status radosgw id=${::ceph::rgw_id}",
-          stop     => "stop radosgw id=${::ceph::rgw_id}",
+      'upstart': {
+        file { "/var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}/upstart":
+          ensure  => file,
+          owner   => 'root',
+          group   => 'root',
+          mode    => '0644',
+          seltype => $::ceph::seltype,
+        } ->
+
+        exec { 'radosgw start':
+          command => "start radosgw id=${::ceph::rgw_id}",
+          unless  => "status radosgw id=${::ceph::rgw_id}",
         }
       }
-      'redhat': {
-        service { 'radosgw':
-          ensure   => running,
-          provider => 'redhat',
-          start    => "systemctl start ceph-radosgw@${::ceph::rgw_id}",
-          status   => "systemctl status ceph-radosgw@${::ceph::rgw_id}",
-          stop     => "systemctl stop ceph-radosgw@${::ceph::rgw_id}",
+      'systemd': {
+        exec { "systemctl enable ceph-radosgw@${::ceph::rgw_id}":
+          unless => "systemctl is-enabled ceph-radosgw@${::ceph::rgw_id}",
+        } ->
+
+        exec { 'radosgw start':
+          command => "systemctl start ceph-radosgw@${::ceph::rgw_id}",
+          unless  => "systemctl status ceph-radosgw@${::ceph::rgw_id}",
         }
       }
       default: {

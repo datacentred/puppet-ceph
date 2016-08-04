@@ -149,6 +149,7 @@ class ceph (
   contain ::ceph::repo
   contain ::ceph::install
   contain ::ceph::config
+  contain ::ceph::service
   contain ::ceph::mon
   contain ::ceph::auth
   contain ::ceph::osd
@@ -157,6 +158,7 @@ class ceph (
   Class['::ceph::repo'] ->
   Class['::ceph::install'] ->
   Class['::ceph::config'] ->
+  Class['::ceph::service'] ->
   Class['::ceph::mon'] ->
   Class['::ceph::auth'] ->
   Class['::ceph::osd'] ->
