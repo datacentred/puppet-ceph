@@ -5,7 +5,7 @@ class ceph::install {
   assert_private()
 
   package { 'ceph':
-    ensure => installed,
+    ensure => $::ceph::package_ensure,
   }
 
   ensure_packages($::ceph::prerequisites)

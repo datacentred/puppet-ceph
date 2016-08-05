@@ -9,7 +9,7 @@ class ceph::rgw {
   if $::ceph::rgw {
 
     package { $::ceph::radosgw_package:
-      ensure => installed,
+      ensure => $::ceph::package_ensure,
     } ->
 
     file { [

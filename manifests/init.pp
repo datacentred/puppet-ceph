@@ -25,6 +25,9 @@
 # [*repo_release*]
 #   OS release version.  Only LTS is supported
 #
+# [*package_ensure*]
+#   Ceph version to install
+#
 # [*user*]
 #   Username ceph runs as
 #
@@ -70,6 +73,8 @@ class ceph (
   $repo_mirror = 'eu.ceph.com',
   $repo_version = 'infernalis',
   $repo_release = 'trusty',
+  # Package management
+  $package_ensure = 'installed',
   # User management
   $user = 'ceph',
   $group = 'ceph',
