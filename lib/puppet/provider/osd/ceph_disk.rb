@@ -4,7 +4,7 @@ Puppet::Type.type(:osd).provide(:ceph_disk) do
 
 private
 
-  OSD_UUID = '4fbd7e29-9d25-41b8-afd0-062c0ceff05d'
+  OSD_UUID = '4FBD7E29-9D25-41B8-AFD0-062C0CEFF05D'
 
   # Translate a scsi address into a device node
   # Params:
@@ -48,18 +48,7 @@ private
   # Params:
   # +dev+:: Device short name e.g. sdd
   def device_prepared?(dev)
-    begin
-      partitions = Dir.entries('/dev/disk/by-parttypeuuid').select { |x| not x.start_with? '.' }
-    rescue Errno::ENOENT
-      return false
-    end
-    partitions.each do |partition|
-      if partition.start_with? OSD_UUID
-        target = File.readlink "/dev/disk/by-parttypeuuid/#{partition}"
-        return true if /#{dev}\d+$/ =~ target
-      end
-    end
-    false
+    %x{sgdisk -i 1 /dev/#{dev}}.include?(OSD_UUID)
   end
 
 public

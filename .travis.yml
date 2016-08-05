@@ -9,6 +9,7 @@ env:
   matrix:
   - PUPPET_INSTALL_TYPE=foss BEAKER_set=openstack-ubuntu-trusty
   - PUPPET_INSTALL_TYPE=foss BEAKER_set=openstack-centos-7
+  - PUPPET_INSTALL_TYPE=agent BEAKER_set=openstack-ubuntu-xenial
   - PUPPET_INSTALL_TYPE=agent BEAKER_set=openstack-ubuntu-trusty
   - PUPPET_INSTALL_TYPE=agent BEAKER_set=openstack-centos-7
   global:

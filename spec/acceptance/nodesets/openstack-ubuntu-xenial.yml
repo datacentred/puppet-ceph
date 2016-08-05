@@ -1,0 +1,23 @@
+---
+HOSTS:
+  puppet:
+    roles:
+      - master
+    platform: ubuntu-16.04-amd64
+    hypervisor: openstack
+    flavor: dc1.1x1.20
+    image: xenial-server-cloudimg-amd64-scsi
+    user: ubuntu
+    distmoduledir: /etc/puppet/modules
+    volumes:
+      osd0:
+        size: 10000
+      osd1:
+        size: 10000
+      osd2:
+        size: 10000
+      journal:
+        size: 1000
+CONFIG:
+  type: foss
+  openstack_network: spjmurray-beaker

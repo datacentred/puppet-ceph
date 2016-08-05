@@ -15,7 +15,7 @@ class ceph::repo {
 
         apt::source { 'ceph':
           location => "http://${::ceph::repo_mirror}/debian-${::ceph::repo_version}",
-          release  => $::ceph::repo_release,
+          release  => $::lsbdistcodename,
           repos    => 'main',
           key      => {
             'id'     => '08B73419AC32B4E966C1A330E84AC2C0460F3994',

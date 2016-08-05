@@ -40,13 +40,16 @@ configuration like 'Slot 01/2:0:0:0' is permissible.
 
 ## Compatibility Matrix
 
-| Version | Operating System       | Ceph | Puppet |
-| ------- | ---------------------- | -----| ------ |
-| 1.0.x   | Ubuntu 14.04           | 0.94 | 3      |
-| 1.1.x   | Ubuntu 14.04           | 0.94 | 3      |
-| 1.2.x   | Ubuntu 14.04           | 0.94 | 3      |
-| 1.3.x   | Ubuntu 14.04, Centos 7 | 0.94 | 3      |
-| 1.4.x   | Ubuntu 14.04, Centos 7 | 9    | 3, 4   |
+| Version | Operating System                       | Ceph | Puppet |
+| ------- | -------------------------------------- | -----| ------ |
+| 1.0.x   | Ubuntu 14.04                           | 0.94 | 3      |
+| 1.1.x   | Ubuntu 14.04                           | 0.94 | 3      |
+| 1.2.x   | Ubuntu 14.04                           | 0.94 | 3      |
+| 1.3.x   | Ubuntu 14.04, Centos 7                 | 0.94 | 3      |
+| 1.4.x   | Ubuntu 14.04, Centos 7                 | 9    | 3, 4   |
+| 1.5.x   | Ubuntu 14.04, Ubuntu 16.04\*, Centos 7 | 10   | 3, 4   |
+
+\* Ubuntu 16.04 only supports Puppet 4
 
 ## Setup
 

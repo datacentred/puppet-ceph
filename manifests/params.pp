@@ -6,7 +6,11 @@ class ceph::params {
 
   case $::operatingsystem {
     'Ubuntu': {
-      $service_provider = 'upstart'
+      if versioncmp($::operatingsystemrelease, '16.04') >= 0 {
+        $service_provider = 'systemd'
+      } else {
+        $service_provider = 'upstart'
+      }
       $radosgw_package = 'radosgw'
       $prerequisites = []
     }
