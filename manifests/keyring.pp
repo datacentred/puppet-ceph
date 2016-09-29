@@ -39,8 +39,8 @@ define ceph::keyring (
   $caps_mon = undef,
   $caps_mds = undef,
   $caps_osd = undef,
-  $owner = 'ceph',
-  $group = 'ceph',
+  $owner = $::ceph::user,
+  $group = $::ceph::group,
   $mode = '0644',
 ) {
 

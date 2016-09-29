@@ -9,3 +9,5 @@ Gemfile.lock
 log
 pkg
 travis.log
+.bundle
+.bundler
