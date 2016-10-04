@@ -35,8 +35,9 @@ The OSD provider can also operate on enclosures with SES firmware running on
 a SAS expander.  In some cases SCSI addresses aren't predicatable and susceptible
 to the same enumeration problem as /dev device names.  In these cases the devices
 can be provisioned with 'Slot 01/Slot 12' which directly correlates with slot names
-found in sysfs.  The two addressing modes can be used interchangably thus
-configuration like 'Slot 01/2:0:0:0' is permissible.
+found in sysfs under /sys/class/enclosure.  On newer expanders the labels may be
+formatted as DISK00 which is also supported.  The two addressing modes can be used
+interchangably thus configuration like 'Slot 01/2:0:0:0' is permissible.
 
 ## Compatibility Matrix
 

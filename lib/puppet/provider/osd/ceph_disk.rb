@@ -37,7 +37,7 @@ private
   # Params:
   # +indetifier+:: SCSI address or enclosure slot number
   def identifier_to_dev(identifier)
-    if identifier.start_with?('Slot')
+    if identifier.start_with?('Slot', 'DISK')
       enclosure_slot_to_dev(identifier)
     else
       scsi_address_to_dev(identifier)
