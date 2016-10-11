@@ -21,8 +21,15 @@ Puppet::Type.newtype(:osd) do
   newparam(:name) do
     desc 'OSD and journal SCSI addresses which can be specified as "H:B:T:L" for direct attached or "Slot 01" for expander devices'
     validate do |value|
-      unless value =~ /^(\d+:\d+:\d+:\d+|Slot \d{2})\/(\d+:\d+:\d+:\d+|Slot \d{2})$/
-        raise ArgumentError, 'osd::name invalid'
+      unless value =~ /[^\/]+\/[^\/]+$/
+        raise ArgumentError, 'osd::name invalid: expected "osd/journal" tuple'
+      end
+      osd, journal = value.split('/')
+      unless osd =~ /^(\d+:\d+:\d+:\d+|Slot \d{2}|DISK\d{2})$/
+        raise ArgumentError, 'osd::name osd identifier invalid'
+      end
+      unless journal =~ /^(\d+:\d+:\d+:\d+|Slot \d{2}|DISK\d{2})$/
+        raise ArgumentError, 'osd::name journal identifier invalid'
       end
     end
   end
