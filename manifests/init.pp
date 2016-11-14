@@ -129,14 +129,23 @@ class ceph (
   },
   # OSD management
   $disks = {
-    '2:0:0:0/5:0:0:0' => {
-      'fstype' => 'xfs',
+    '2:0:0:0' => {
+      'journal' => '5:0:0:0',
+      'params'  => {
+        'fs-type' => 'xfs',
+      },
     },
-    '3:0:0:0/5:0:0:0' => {
-      'fstype' => 'xfs',
+    '3:0:0:0' => {
+      'journal' => '5:0:0:0',
+      'params'  => {
+        'fs-type' => 'xfs',
+      },
     },
-    '4:0:0:0/5:0:0:0' => {
-      'fstype' => 'xfs',
+    '4:0:0:0' => {
+      'journal' => '5:0:0:0',
+      'params'  => {
+        'fs-type' => 'xfs',
+      },
     },
   },
   # RGW management

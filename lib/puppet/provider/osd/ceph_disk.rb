@@ -4,7 +4,11 @@ Puppet::Type.type(:osd).provide(:ceph_disk) do
 
 private
 
-  OSD_UUID = '4FBD7E29-9D25-41B8-AFD0-062C0CEFF05D'
+  OSD_UUIDS = [
+    '4FBD7E29-9D25-41B8-AFD0-062C0CEFF05D', # regular
+    '4FBD7E29-9D25-41B8-AFD0-35865CEFF05D', # luks
+    '4FBD7E29-9D25-41B8-AFD0-5EC00CEFF05D', # plain
+  ]
 
   # Translate a scsi address into a device node
   # Params:
@@ -48,14 +52,20 @@ private
   # Params:
   # +dev+:: Device short name e.g. sdd
   def device_prepared?(dev)
-    %x{sgdisk -i 1 /dev/#{dev}}.include?(OSD_UUID)
+    sgdisk = %x{sgdisk -i 1 /dev/#{dev}}
+    OSD_UUIDS.any? { |uuid| sgdisk.include?(uuid) }
   end
 
 public
 
   # Create the resource
   def create
-    command = "ceph-disk prepare --fs-type #{@fstype} /dev/#{@osd_dev} /dev/#{@journal_dev}"
+    command = "ceph-disk prepare"
+    command << " " + resource[:params].map { |k, v| v == :undef ? "--#{k}" : "--#{k} #{v}" }.join(' ')
+    command << "  /dev/#{@osd_dev}"
+    if @journal_dev
+      command << " /dev/#{@journal_dev}"
+    end
     Puppet::Util::Execution.execute(command)
     # Upstart automatically does this for us via udev events
     if :operatingsystem != 'Ubuntu'
@@ -71,17 +81,23 @@ public
 
   # Check if the resource exists
   def exists?
-    osd, journal = resource[:name].split '/'
-    @fstype = resource[:fstype]
+    # Check if the main OSD device can be resolved
     begin
-      @osd_dev = identifier_to_dev(osd)
-      @journal_dev = identifier_to_dev(journal)
+      @osd_dev = identifier_to_dev(resource[:name])
     rescue RuntimeError
-      # Either the device isn't physically present or didn't have a device node
-      # Valid state if a machine has a faulty drive slot for example
-      warning "unable to detect device #{osd}"
+      warning "unable to detect osd device #{resource[:name]}"
       return true
     end
+    # Check if the optional journal device can be resolved
+    if resource[:journal]
+      begin
+        @journal_dev = identifier_to_dev(resource[:journal])
+      rescue RuntimeError
+        warning "unable to detect journal device #{resource[:journal]}"
+        return true
+      end
+    end
+    # Check if the OSD device has been prepared
     device_prepared? @osd_dev
   end
 

@@ -32,28 +32,46 @@ describe 'ceph' do
       if default['hypervisor'] == 'vagrant'
         disks = <<-EOS
           disks => {
-            '2:0:0:0/5:0:0:0' => {
-              'fstype' => 'xfs',
+            '2:0:0:0' => {
+              'journal' => '5:0:0:0',
+              'params'  => {
+                'fs-type' => 'xfs',
+              },
             },
-            '3:0:0:0/5:0:0:0' => {
-              'fstype' => 'xfs',
+            '3:0:0:0' => {
+              'journal' => '5:0:0:0',
+              'params'  => {
+                'fs-type' => 'xfs',
+              },
             },
-            '4:0:0:0/5:0:0:0' => {
-              'fstype' => 'xfs',
+            '4:0:0:0' => {
+              'journal' => '5:0:0:0',
+              'params'  => {
+                'fs-type' => 'xfs',
+              },
             },
           },
         EOS
       elsif default['hypervisor'] == 'openstack'
         disks = <<-EOS
           disks => {
-            '2:0:0:1/2:0:0:4' => {
-              'fstype' => 'xfs',
+            '2:0:0:1' => {
+              'journal' => '2:0:0:4',
+              'params'  => {
+                'fs-type' => 'xfs',
+              },
             },
-            '2:0:0:2/2:0:0:4' => {
-              'fstype' => 'xfs',
+            '2:0:0:2' => {
+              'journal' => '2:0:0:4',
+              'params'  => {
+                'fs-type' => 'xfs',
+              },
             },
-            '2:0:0:3/2:0:0:4' => {
-              'fstype' => 'xfs',
+            '2:0:0:3' => {
+              'journal' => '2:0:0:4',
+              'params'  => {
+                'fs-type' => 'xfs',
+              },
             },
           },
         EOS
@@ -85,6 +103,7 @@ describe 'ceph' do
     it 'accepts http requests after reboot' do
       # Reboot the box and wait for it to come back (takes a while for Centos)
       default.reboot
+      default.wait_for_port(22)
       # Check radosgw is back
       retry_on(default, 'netstat -l | grep 7480', :max_retries => 30)
     end

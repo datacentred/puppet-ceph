@@ -34,10 +34,15 @@ based on whether ceph-disk has been run.
 The OSD provider can also operate on enclosures with SES firmware running on
 a SAS expander.  In some cases SCSI addresses aren't predicatable and susceptible
 to the same enumeration problem as /dev device names.  In these cases the devices
-can be provisioned with 'Slot 01/Slot 12' which directly correlates with slot names
+can be provisioned with 'Slot 01' which directly correlates to a slot name
 found in sysfs under /sys/class/enclosure.  On newer expanders the labels may be
 formatted as DISK00 which is also supported.  The two addressing modes can be used
-interchangably thus configuration like 'Slot 01/2:0:0:0' is permissible.
+interchangably.
+
+The OSD provider also accepts an arbitrary hash of parameters to be passed to
+ceph-disk.  The keys are the long options supported by ceph-disk stripped of the
+leading double hyphens.  Values are either strings or nil/undef e.g. for options
+without arguments like --bluestore.
 
 ## Compatibility Matrix
 
@@ -50,7 +55,7 @@ interchangably thus configuration like 'Slot 01/2:0:0:0' is permissible.
 | 1.4.x   | Ubuntu 14.04, Centos 7                 | 9    | 3, 4   |
 | 1.5.x   | Ubuntu 14.04, Ubuntu 16.04\*, Centos 7 | 10   | 3, 4   |
 
-\* Ubuntu 16.04 only supports Puppet 4
+\* Ubuntu 16.04 only tested with Puppet 4
 
 ## Setup
 
@@ -121,12 +126,18 @@ ceph::keys:
 
 # Create the OSDs
 ceph::disks:
-  3:0:0:0/6:0:0:0:
-    fstype: 'xfs'
-  4:0:0:0/6:0:0:0:
-    fstype: 'xfs'
-  5:0:0:0/6:0:0:0:
-    fstype: 'xfs'
+  3:0:0:0:
+    journal: '6:0:0:0'
+    params:
+      fs-type: 'xfs'
+  4:0:0:0:
+    journal: '6:0:0:0'
+    params:
+      fs-type: 'xfs'
+  5:0:0:0:
+    journal: '6:0:0:0'
+    params:
+      fs-type: 'xfs'
 ```
 
 ### Advanced Usage
@@ -238,30 +249,30 @@ ceph::keys:
 
 # Product specific OSD definitions
 ceph::disks:
-  Slot 01/Slot 01:
-    fstype: 'xfs'
-  Slot 02/Slot 02:
-    fstype: 'xfs'
-  Slot 03/Slot 03:
-    fstype: 'xfs'
-  Slot 04/Slot 04:
-    fstype: 'xfs'
-  Slot 05/Slot 05:
-    fstype: 'xfs'
-  Slot 06/Slot 06:
-    fstype: 'xfs'
-  Slot 07/Slot 07:
-    fstype: 'xfs'
-  Slot 08/Slot 08:
-    fstype: 'xfs'
-  Slot 09/Slot 09:
-    fstype: 'xfs'
-  Slot 10/Slot 10:
-    fstype: 'xfs'
-  Slot 11/Slot 11:
-    fstype: 'xfs'
-  Slot 12/Slot 12:
-    fstype: 'xfs'
+  Slot 01:
+    journal: 'Slot 01'
+  Slot 02:
+    journal: 'Slot 02'
+  Slot 03:
+    journal: 'Slot 03'
+  Slot 04:
+    journal: 'Slot 04'
+  Slot 05:
+    journal: 'Slot 05'
+  Slot 06:
+    journal: 'Slot 06'
+  Slot 07:
+    journal: 'Slot 07'
+  Slot 08:
+    journal: 'Slot 08'
+  Slot 09:
+    journal: 'Slot 09'
+  Slot 10:
+    journal: 'Slot 10'
+  Slot 11:
+    journal: 'Slot 11'
+  Slot 12:
+    journal: 'Slot 12'
 ```
 
 ```yaml
