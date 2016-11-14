@@ -94,7 +94,7 @@ describe 'ceph' do
       apply_manifest(pp, :catch_failures => true)
     end
 
-    it 'priovisions idempotently' do
+    it 'provisions idempotently' do
       apply_manifest(pp, :catch_changes => true)
     end
 

@@ -85,7 +85,7 @@ class ceph (
   $conf = {
     'global'                => {
       'fsid'                      => '62ed9bd6-adf4-11e4-8fb5-3c970ebb2b86',
-      'mon_initial_members'       => $::hostname,
+      'mon_initial_members'       => 'mon0',
       'mon_host'                  => '127.0.0.1',
       'public_network'            => '127.0.0.0/8',
       'cluster_network'           => '127.0.0.0/8',
@@ -151,7 +151,7 @@ class ceph (
     },
   },
   # RGW management
-  $rgw_id = "rgw.${hostname}",
+  $rgw_id = "rgw.${::hostname}",
   # MDS management
   $mds_id = $::hostname,
   # Parameters
