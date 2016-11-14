@@ -197,11 +197,10 @@ ceph::keys:
     user: 'client.bootstrap-mds'
     key: "%{hiera('ceph_key_bootstrap_mds')}"
     caps_mon: 'allow profile bootstrap-mds'
-  /etc/ceph/ceph.client.radosgw.rgw0.keyring:
-    user: 'client.radosgw.rgw0'
-    key: "%{hiera('ceph_key_client_radosgw_rgw0')}"
-    caps_mon: 'allow rwx'
-    caps_osd: 'allow rwx'
+  /var/lib/ceph/bootstrap-rgw/ceph.keyring:
+    user: 'client.bootstrap-rgw'
+    key: "%{hiera('ceph_key_bootstrap_rgw')}"
+    caps_mon: 'allow profile bootstrap-rgw'
   /etc/ceph/ceph.client.glance.keyring:
     user: 'client.glance'
     key: "%{hiera('ceph_key_client_glance')}"
@@ -287,7 +286,6 @@ ceph::rgw_id: "radosgw.%{hostname}"
 ceph::conf:
   client.radosgw.%{hostname}:
     host: "%{hostname}"
-    keyring: "/etc/ceph/ceph.client.radosgw.%{hostname}.keyring"
     rgw enable usage log: 'true'
     rgw thread pool size: '4096'
     rgw dns name: 'storage.example.com'
@@ -302,17 +300,10 @@ ceph::keys:
   /etc/ceph/ceph.client.admin.keyring:
     user: 'client.admin'
     key: "%{hiera('ceph_key_client_admin')}"
-```
-
-```yaml
----
-### /var/lib/hiera/node/rgw0.yaml
-
-# Rados gateway node specific configuration
-ceph::keys:
-  /etc/ceph/ceph.client.radosgw.rgw0.keyring:
-    user: 'client.radosgw.rgw0'
-    key: "%{hiera('ceph_key_client_radosgw_rgw0')}"
+  /var/lib/ceph/bootstrap-rgw/ceph.keyring:
+    user: 'client.bootstrap-rgw'
+    key: "%{hiera('ceph_key_bootstrap_rgw')}"
+    caps_mon: 'allow profile bootstrap-rgw'
 ```
 
 ```yaml

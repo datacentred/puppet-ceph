@@ -13,6 +13,9 @@
 # [*rgw*]
 #   Install an object gateway
 #
+# [*mds*]
+#   Install a metadata server
+#
 # [*manage_repo*]
 #   Whether this module should install custom repos
 #
@@ -65,6 +68,7 @@ class ceph (
   $mon = false,
   $osd = false,
   $rgw = false,
+  $mds = false,
   # Package management
   $manage_repo = true,
   $repo_mirror = 'eu.ceph.com',
@@ -92,8 +96,7 @@ class ceph (
     'osd'                   => {
       'osd_journal_size' => 100,
     },
-    'client.radosgw.puppet' => {
-      'keyring'       => '/etc/ceph/ceph.client.radosgw.puppet.keyring',
+    'client.rgw.puppet' => {
       'rgw frontends' => '"civetweb port=7480"'
     },
   },
@@ -103,25 +106,24 @@ class ceph (
   # Key management
   $keys_merge = false,
   $keys = {
-    '/etc/ceph/ceph.client.admin.keyring'          => {
+    '/etc/ceph/ceph.client.admin.keyring'      => {
       'user'     => 'client.admin',
       'key'      => 'AQBAyNlUmO09CxAA2u2p6s38wKkBXaLWFeD7bA==',
       'caps_mon' => 'allow *',
       'caps_osd' => 'allow *',
       'caps_mds' => 'allow',
     },
-    '/etc/ceph/ceph.client.radosgw.puppet.keyring' => {
-      'user'     => 'client.radosgw.puppet',
+    '/var/lib/ceph/bootstrap-rgw/ceph.keyring' => {
+      'user'     => 'client.bootstrap-rgw',
       'key'      => 'AQD+zXZVDljeKRAAKA30V/QvzbI9oUtcxAchog==',
-      'caps_mon' => 'allow rwx',
-      'caps_osd' => 'allow rwx',
+      'caps_mon' => 'allow profile bootstrap-rgw',
     },
-    '/var/lib/ceph/bootstrap-osd/ceph.keyring'     => {
+    '/var/lib/ceph/bootstrap-osd/ceph.keyring' => {
       'user'     => 'client.bootstrap-osd',
       'key'      => 'AQDLGtpUdYopJxAAnUZHBu0zuI0IEVKTrzmaGg==',
       'caps_mon' => 'allow profile bootstrap-osd',
     },
-    '/var/lib/ceph/bootstrap-mds/ceph.keyring'     => {
+    '/var/lib/ceph/bootstrap-mds/ceph.keyring' => {
       'user'     => 'client.bootstrap-mds',
       'key'      => 'AQDLGtpUlWDNMRAAVyjXjppZXkEmULAl93MbHQ==',
       'caps_mon' => 'allow profile bootstrap-mds',
@@ -149,7 +151,9 @@ class ceph (
     },
   },
   # RGW management
-  $rgw_id = 'radosgw.puppet',
+  $rgw_id = "rgw.${hostname}",
+  # MDS management
+  $mds_id = $::hostname,
   # Parameters
   $service_provider = $::ceph::params::service_provider,
   $radosgw_package = $::ceph::params::radosgw_package,
@@ -164,6 +168,7 @@ class ceph (
   contain ::ceph::auth
   contain ::ceph::osd
   contain ::ceph::rgw
+  contain ::ceph::mds
 
   Class['::ceph::repo'] ->
   Class['::ceph::install'] ->
@@ -172,6 +177,7 @@ class ceph (
   Class['::ceph::mon'] ->
   Class['::ceph::auth'] ->
   Class['::ceph::osd'] ->
-  Class['::ceph::rgw']
+  Class['::ceph::rgw'] ->
+  Class['::ceph::mds']
 
 }
