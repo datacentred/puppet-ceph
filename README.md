@@ -281,16 +281,14 @@ ceph::disks:
 
 # Create a Rados gateway
 ceph::rgw: true
-ceph::rgw_id: "radosgw.%{hostname}"
+ceph::rgw_id: "rgw.%{hostname}"
 
 # Rados gateway specific configuration
 ceph::conf:
-  client.radosgw.%{hostname}:
-    host: "%{hostname}"
+  client.rgw.%{hostname}:
     rgw enable usage log: 'true'
     rgw thread pool size: '4096'
     rgw dns name: 'storage.example.com'
-    rgw socket path: "/var/run/ceph/ceph.client.radosgw.%{hostname}.fastcgi.sock"
     rgw keystone url: 'https://keystone.example.com:35357'
     rgw keystone admin token: 'dab8928d-1787-4d73-b3e9-1184a4aeffcb'
     rgw keystone accepted roles: '_member_,admin'
