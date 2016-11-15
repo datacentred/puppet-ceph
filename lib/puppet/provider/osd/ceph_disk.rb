@@ -20,7 +20,7 @@ private
     path = "/sys/class/scsi_disk/#{address}/device/block"
     bd = Dir.entries(path).reject { |x| x.start_with? '.' }
     return nil unless bd.length == 1
-    bd.first
+    "/dev/#{bd.first}"
   end
 
   # Translate a slot number into a device node
@@ -38,14 +38,16 @@ private
     return nil unless File.exist?(path)
     bd = Dir.entries(blockdir).reject { |x| x.start_with? '.' }
     return nil unless bd.length == 1
-    bd.first
+    "/dev/#{bd.first}"
   end
 
   # Redirect the request to the correct SCSI backend
   # Params:
   # +indetifier+:: SCSI address or enclosure slot number
   def identifier_to_dev(identifier)
-    if identifier.start_with?('Slot', 'DISK')
+    if identifier.start_with?('/dev/')
+      identifier
+    elsif identifier.start_with?('Slot', 'DISK')
       enclosure_slot_to_dev(identifier)
     else
       scsi_address_to_dev(identifier)
@@ -56,7 +58,7 @@ private
   # Params:
   # +dev+:: Device short name e.g. sdd
   def device_prepared?(dev)
-    sgdisk = `sgdisk -i 1 /dev/#{dev}`
+    sgdisk = `sgdisk -i 1 #{dev}`
     OSD_UUIDS.any? { |uuid| sgdisk.include?(uuid) }
   end
 
@@ -69,8 +71,8 @@ private
     end.join(' ')
     command = 'ceph-disk prepare'
     command << " #{params}" unless params.empty?
-    command << " /dev/#{@osd_dev}"
-    command << " /dev/#{@journal_dev}" if @journal_dev
+    command << " #{@osd_dev}"
+    command << " #{@journal_dev}" if @journal_dev
     Puppet::Util::Execution.execute(command)
   end
 
@@ -78,7 +80,7 @@ private
   def osd_activate
     # Upstart automatically does this for us via udev events
     return unless :operatingsystem == 'Ubuntu'
-    command = "ceph-disk activate /dev/#{@osd_dev}1"
+    command = "ceph-disk activate #{@osd_dev}1"
     Puppet::Util::Execution.execute(command)
   end
 

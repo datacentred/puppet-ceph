@@ -57,6 +57,8 @@ Puppet::Type.newtype(:osd) do
   end
 
   def validate_address(address)
+    # Device nodes (not officially supported)
+    return if address.start_with?('/dev/')
     # SCSI address e.g. 1:0:0:0
     return if address =~ /^\d+:\d+:\d+:\d+$/
     # Expander slot e.g. Slot 01, DISK00
