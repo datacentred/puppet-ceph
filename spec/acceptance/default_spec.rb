@@ -2,7 +2,6 @@ require 'spec_helper_acceptance'
 
 describe 'ceph' do
   context 'initialization' do
-
     # As of 10.2.0 127.0.0.0/8 doesn't work, so use the VM's IP
     conf = <<-EOS
        conf => {
@@ -75,7 +74,7 @@ describe 'ceph' do
         },
       EOS
     else
-      raise ArgumentError, "Unsupported hypervisor"
+      raise ArgumentError, 'Unsupported hypervisor'
     end
 
     pp = <<-EOS

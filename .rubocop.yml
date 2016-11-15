@@ -1,0 +1,16 @@
+AllCops:
+  Exclude:
+    # Ignore HTML related things
+    - '**/*.erb'
+    # Ignore code from test fixtures
+    - 'spec/fixtures/**/*'
+    # Ignore packaging
+    - 'pkg/**/*'
+    # Ignore bundler
+    - '.bundle/**/*'
+
+Style/HashSyntax:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false

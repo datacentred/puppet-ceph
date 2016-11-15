@@ -14,7 +14,9 @@ RSpec.configure do |c|
       copy_module_to(host, :source => module_root, :module_name => 'ceph')
 
       # Install dependencies
-      on host, puppet('module install puppetlabs-apt'), { :acceptable_exit_codes => [0,1] }
+      on host,
+         puppet('module install puppetlabs-apt'),
+         :acceptable_exit_codes => [0, 1]
 
       # Install EPEL on centos
       if host['platform'].start_with?('el')

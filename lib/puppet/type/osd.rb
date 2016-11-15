@@ -26,14 +26,14 @@ Puppet::Type.newtype(:osd) do
   end
 
   newparam(:name) do
-    desc 'OSD SCSI addresses which can be specified as "H:B:T:L" for direct attached or "Slot 01" for expander devices'
+    desc 'OSD identifier'
     validate do |value|
       resource.validate_address(value)
     end
   end
 
   newparam(:journal) do
-    desc 'Device to create journal from specified as "H:B:T:L" for direct attached or "Slot 01" for expander devices'
+    desc 'Journal identifier'
     defaultto :undef
     validate do |value|
       value && resource.validate_address(value)
@@ -51,15 +51,17 @@ Puppet::Type.newtype(:osd) do
         raise ArgumentError, 'osd::params parameter keys should be strings'
       end
       unless value.values.all? { |v| v.is_a?(String) || v == :undef }
-        raise ArgumentError, 'osd::params parameter values should be strings or undef'
+        raise ArgumentError, 'osd::params parameters should be strings or undef'
       end
     end
   end
 
   def validate_address(address)
-    unless address =~ /^(\d+:\d+:\d+:\d+|Slot \d{2}|DISK\d{2})$/
-      raise ArgumentError, 'osd::validate_address device identifier invalid'
-    end
+    # SCSI address e.g. 1:0:0:0
+    return if address =~ /^\d+:\d+:\d+:\d+$/
+    # Expander slot e.g. Slot 01, DISK00
+    return if address =~ /^(Slot \d{2}|DISK\d{2})$/
+    raise ArgumentError, 'osd::validate_address device identifier invalid'
   end
 
   autorequire(:package) do
@@ -69,5 +71,4 @@ Puppet::Type.newtype(:osd) do
   autorequire(:file) do
     '/var/lib/ceph/bootstrap-osd/ceph.keyring'
   end
-
 end
