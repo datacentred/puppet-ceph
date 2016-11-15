@@ -54,6 +54,7 @@ without arguments like --bluestore.
 | 1.3.x   | Ubuntu 14.04, Centos 7                 | 0.94 | 3      |
 | 1.4.x   | Ubuntu 14.04, Centos 7                 | 9    | 3, 4   |
 | 1.5.x   | Ubuntu 14.04, Ubuntu 16.04\*, Centos 7 | 10   | 3, 4   |
+| 2.0.x   | Ubuntu 14.04, Ubuntu 16.04\*, Centos 7 | 10   | 3, 4   |
 
 \* Ubuntu 16.04 only tested with Puppet 4
 
