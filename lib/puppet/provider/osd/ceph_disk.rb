@@ -37,7 +37,7 @@ private
     # Get the device from the enclosure slot
     path = "/sys/class/enclosure/#{enclosures.first}/#{slot}/device/block"
     return nil unless File.exist?(path)
-    bd = Dir.entries(blockdir).reject { |x| x.start_with? '.' }
+    bd = Dir.entries(path).reject { |x| x.start_with? '.' }
     return nil unless bd.length == 1
     "/dev/#{bd.first}"
   end
