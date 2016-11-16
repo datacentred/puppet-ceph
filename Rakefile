@@ -4,6 +4,11 @@ require 'puppet-lint/tasks/puppet-lint'
 require 'puppetlabs_spec_helper/rake_tasks'
 
 PuppetLint.configuration.send('disable_autoloader_layout')
+PuppetLint.configuration.ignore_paths = [
+  'spec/**/*.pp',
+  'pkg/**/*.pp',
+  'vendor/**/*.pp'
+]
 
 desc 'Run all RSpec code examples'
 RSpec::Core::RakeTask.new(:rspec) do |t|
@@ -22,7 +27,5 @@ namespace :rspec do
     end
   end
 end
-
-PuppetLint.configuration.ignore_paths = ['spec/**/*.pp', 'vendor/**/*.pp']
 
 task :default => [:rspec, :lint]

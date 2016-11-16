@@ -27,17 +27,18 @@ class ceph::mds {
       mode   => '0644',
     } ->
 
-    exec { "ceph --name client.bootstrap-mds \
+    exec { 'mds keyring create':
+      command => "ceph --name client.bootstrap-mds \
                  --keyring /var/lib/ceph/bootstrap-mds/ceph.keyring \
                  auth get-or-create mds.${::ceph::mds_id} \
                  mon 'allow profile mds' \
                  osd 'allow rwx' mds allow \
-                 -o /var/lib/ceph/mds/ceph-${::ceph::mds_id}/keyring":
+                 -o /var/lib/ceph/mds/ceph-${::ceph::mds_id}/keyring",
       creates => "/var/lib/ceph/mds/ceph-${::ceph::mds_id}/keyring",
       user    => $::ceph::user,
     } ->
 
-    Exec['mds start']
+    Exec['mds service start']
 
     case $::ceph::service_provider {
       'upstart': {
@@ -46,17 +47,18 @@ class ceph::mds {
           mode   => '0644',
         } ->
 
-        exec { 'mds start':
+        exec { 'mds service start':
           command => "start ceph-mds id=${::ceph::mds_id}",
           unless  => "status ceph-mds id=${::ceph::mds_id}",
         }
       }
       'systemd': {
-        exec { "systemctl enable ceph-mds@${::ceph::mds_id}":
-          unless => "systemctl is-enabled ceph-mds@${::ceph::mds_id}",
+        exec { 'mds service enable':
+          command => "systemctl enable ceph-mds@${::ceph::mds_id}",
+          unless  => "systemctl is-enabled ceph-mds@${::ceph::mds_id}",
         } ->
 
-        exec { 'mds start':
+        exec { 'mds service start':
           command => "systemctl start ceph-mds@${::ceph::mds_id}",
           unless  => "systemctl status ceph-mds@${::ceph::mds_id}",
         }

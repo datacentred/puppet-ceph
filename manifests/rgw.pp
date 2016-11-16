@@ -31,17 +31,18 @@ class ceph::rgw {
       mode   => '0644',
     } ->
 
-    exec { "ceph --name client.bootstrap-rgw \
+    exec { 'rgw keyring create':
+      command => "ceph --name client.bootstrap-rgw \
                  --keyring /var/lib/ceph/bootstrap-rgw/ceph.keyring \
                  auth get-or-create client.${::ceph::rgw_id} \
                  mon 'allow rw' \
                  osd 'allow rwx' \
-                 -o /var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}/keyring":
+                 -o /var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}/keyring",
       creates => "/var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}/keyring",
       user    => $::ceph::user,
     } ->
 
-    Exec['radosgw start']
+    Exec['rgw service start']
 
     case $::ceph::service_provider {
       'upstart': {
@@ -50,17 +51,18 @@ class ceph::rgw {
           mode   => '0644',
         } ->
 
-        exec { 'radosgw start':
+        exec { 'rgw service start':
           command => "start radosgw id=${::ceph::rgw_id}",
           unless  => "status radosgw id=${::ceph::rgw_id}",
         }
       }
       'systemd': {
-        exec { "systemctl enable ceph-radosgw@${::ceph::rgw_id}":
-          unless => "systemctl is-enabled ceph-radosgw@${::ceph::rgw_id}",
+        exec { 'rgw service enable':
+          command => "systemctl enable ceph-radosgw@${::ceph::rgw_id}",
+          unless  => "systemctl is-enabled ceph-radosgw@${::ceph::rgw_id}",
         } ->
 
-        exec { 'radosgw start':
+        exec { 'rgw service start':
           command => "systemctl start ceph-radosgw@${::ceph::rgw_id}",
           unless  => "systemctl status ceph-radosgw@${::ceph::rgw_id}",
         }

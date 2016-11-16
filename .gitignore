@@ -10,4 +10,4 @@ log
 pkg
 travis.log
 .bundle
-.bundler
+vendor
