@@ -36,7 +36,7 @@ Puppet::Type.newtype(:osd) do
     desc 'Journal identifier'
     defaultto :undef
     validate do |value|
-      value && resource.validate_address(value)
+      resource.validate_address(value) if value != :undef
     end
   end
 
