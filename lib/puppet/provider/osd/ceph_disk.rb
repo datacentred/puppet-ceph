@@ -12,12 +12,13 @@ private
   # Translate a scsi address into a device node
   # Params:
   # +address+:: SCSI address of the device in H:B:T:L format
-  def scsi_address_to_dev(address)
+  def self.scsi_address_to_dev(address)
     # Get a list of all detected scsi disks and see 'address' exists
     scsi_disks = Dir.entries('/sys/class/scsi_disk')
     return nil unless scsi_disks.include? address
     # Get the device node allocated by the kernel
     path = "/sys/class/scsi_disk/#{address}/device/block"
+    return nil unless File.exist?(path)
     bd = Dir.entries(path).reject { |x| x.start_with? '.' }
     return nil unless bd.length == 1
     "/dev/#{bd.first}"
@@ -26,7 +27,7 @@ private
   # Translate a slot number into a device node
   # Params:
   # +slot+:: Slot number of the SAS expander e.g. "Slot 02"
-  def enclosure_slot_to_dev(slot)
+  def self.enclosure_slot_to_dev(slot)
     # Get the expander
     # TODO: Supports one enclosure services device, need a way of reliably
     #       addressing expanders
@@ -44,7 +45,7 @@ private
   # Redirect the request to the correct SCSI backend
   # Params:
   # +indetifier+:: SCSI address or enclosure slot number
-  def identifier_to_dev(identifier)
+  def self.identifier_to_dev(identifier)
     if identifier.start_with?('/dev/')
       identifier
     elsif identifier.start_with?('Slot', 'DISK')
@@ -57,7 +58,7 @@ private
   # Check whether an OSD has been provisioned
   # Params:
   # +dev+:: Device short name e.g. sdd
-  def device_prepared?(dev)
+  def self.device_prepared?(dev)
     sgdisk = `sgdisk -i 1 #{dev}`
     OSD_UUIDS.any? { |uuid| sgdisk.include?(uuid) }
   end
