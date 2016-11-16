@@ -4,6 +4,7 @@ before_script:
 - bundle exec rake lint
 - bundle exec rake rubocop
 - bundle exec rake validate
+- bundle exec rake spec
 script:
 - bundle exec rake beaker
 env:

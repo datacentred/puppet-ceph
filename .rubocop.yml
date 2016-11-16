@@ -12,5 +12,11 @@ AllCops:
 Style/HashSyntax:
   Enabled: false
 
+Metrics/LineLength:
+  Enabled: false
+
 Metrics/BlockLength:
+  Enabled: false
+
+Metrics/AbcSize:
   Enabled: false

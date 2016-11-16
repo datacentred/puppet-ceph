@@ -70,37 +70,34 @@ private
   def self.format_params(params)
     # Parameter list is stripped of leading hyphens
     # An undefined value is an option without an argument
-    resource[:params].map do |k, v|
-      v == :undef ? "--#{k}" : "--#{k} #{v}"
+    params.map do |k, v|
+      v == :undef && "--#{k}" || "--#{k} #{v}"
     end.join(' ')
   end
 
   # Prepare an OSD
-  def osd_prepare
-    params = format_params(resource[:params])
+  # Params:
+  # +data+:: Data device
+  # +journal+:: Journal device
+  # +params+:: Parameter hash
+  def self.osd_prepare(data, journal, params)
+    params = format_params(params)
     command = 'ceph-disk prepare'
     command << " #{params}" unless params.empty?
-    command << " #{@osd_dev}"
-    command << " #{@journal_dev}" if @journal_dev
-    Puppet::Util::Execution.execute(command)
-  end
-
-  # Activate an OSD
-  def osd_activate
-    # Upstart automatically does this for us via udev events
-    return unless :operatingsystem == 'Ubuntu'
-    command = "ceph-disk activate #{@osd_dev}1"
+    command << " #{data}"
+    command << " #{journal}" if journal
     Puppet::Util::Execution.execute(command)
   end
 
   # Evaluate arguments
   def eval_arguments
-    @osd_dev = identifier_to_dev(resource[:name])
+    @osd_dev = self.class.identifier_to_dev(resource[:name])
     return false unless @osd_dev
     if resource[:journal] != :undef
-      @journal_dev = identifier_to_dev(resource[:journal])
+      @journal_dev = self.class.identifier_to_dev(resource[:journal])
       return false unless @journal_dev
     end
+    @params = resource[:params] == :undef && {} || resource[:params]
     true
   end
 
@@ -108,8 +105,7 @@ public
 
   # Create the resource
   def create
-    osd_prepare
-    osd_activate
+    self.class.osd_prepare(@osd_dev, @journal_dev, @params)
   end
 
   # Destroy the resource
@@ -120,11 +116,11 @@ public
   # Check if the resource exists
   def exists?
     unless eval_arguments
-      warning "unable to detect osd or journal device for #{resource[:name]}"
+      warning 'unable to detect osd or journal device'
       # Let execution continue, the disk may be removed for a legitimate reason
       return true
     end
     # Check if the OSD device has been prepared
-    device_prepared? @osd_dev
+    self.class.device_prepared? @osd_dev
   end
 end

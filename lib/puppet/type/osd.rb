@@ -42,28 +42,27 @@ Puppet::Type.newtype(:osd) do
 
   newparam(:params) do
     desc 'Parameter list to be passed to ceph-disk'
-    defaultto {}
+    defaultto :undef
     validate do |value|
-      unless value.is_a?(Hash)
-        raise ArgumentError, 'osd::params parameter list should be a hash'
-      end
-      unless value.keys.all? { |k| k.is_a?(String) }
-        raise ArgumentError, 'osd::params parameter keys should be strings'
-      end
-      unless value.values.all? { |v| v.is_a?(String) || v == :undef }
-        raise ArgumentError, 'osd::params parameters should be strings or undef'
-      end
+      resource.validate_params(value) if value != :undef
     end
   end
 
   def validate_address(address)
+    raise ArgumentError, 'osd::validate_address invalid type' unless address.is_a?(String)
     # Device nodes (not officially supported)
     return if address.start_with?('/dev/')
     # SCSI address e.g. 1:0:0:0
     return if address =~ /^\d+:\d+:\d+:\d+$/
     # Expander slot e.g. Slot 01, DISK00
     return if address =~ /^(Slot \d{2}|DISK\d{2})$/
-    raise ArgumentError, 'osd::validate_address device identifier invalid'
+    raise ArgumentError, 'osd::validate_address invalid value'
+  end
+
+  def validate_params(params)
+    raise ArgumentError, 'osd::validate_params invalid type' unless params.is_a?(Hash)
+    raise ArgumentError, 'osd::validate_params invalid key type' unless params.keys.all? { |k| k.is_a?(String) }
+    raise ArgumentError, 'osd::validate_params invalid value type' unless params.values.all? { |v| v.is_a?(String) || v == :undef }
   end
 
   autorequire(:package) do
