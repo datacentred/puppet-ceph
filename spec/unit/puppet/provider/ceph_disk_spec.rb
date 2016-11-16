@@ -203,4 +203,64 @@ describe Puppet::Type.type(:osd).provider(:ceph_disk) do
       described_class.osd_prepare('/dev/sdb', nil, {})
     end
   end
+
+  context '#exists?' do
+    it 'returns true with valid required parameters and sets instance variables correctly' do
+      resource = described_class.resource_type.new(:name => '0:0:0:0')
+
+      described_class.stubs(:identifier_to_dev).with('0:0:0:0').returns('/dev/sdb')
+      described_class.stubs(:device_prepared?).with('/dev/sdb').returns(true)
+
+      expect(resource.provider.exists?).to eq(true)
+      expect(resource.provider.instance_variable_get('@osd_dev')).to eq('/dev/sdb')
+      expect(resource.provider.instance_variable_get('@journal_dev')).to be_nil
+      expect(resource.provider.instance_variable_get('@params')).to eq({})
+    end
+
+    it 'returns true with valid optional parameters and sets instance variables correctly' do
+      resource = described_class.resource_type.new(:name => '0:0:0:0', :journal => '1:0:0:0', :params => { 'fs-type' => 'xfs' })
+
+      described_class.stubs(:identifier_to_dev).with('0:0:0:0').returns('/dev/sdb')
+      described_class.stubs(:identifier_to_dev).with('1:0:0:0').returns('/dev/sdc')
+      described_class.stubs(:device_prepared?).with('/dev/sdb').returns(true)
+
+      expect(resource.provider.exists?).to eq(true)
+      expect(resource.provider.instance_variable_get('@osd_dev')).to eq('/dev/sdb')
+      expect(resource.provider.instance_variable_get('@journal_dev')).to eq('/dev/sdc')
+      expect(resource.provider.instance_variable_get('@params')).to eq('fs-type' => 'xfs')
+    end
+
+    it 'returns true with invalid required parameters and warns' do
+      resource = described_class.resource_type.new(:name => '0:0:0:0')
+
+      described_class.stubs(:identifier_to_dev).with('0:0:0:0').returns(nil)
+
+      resource.provider.expects(:warning)
+      expect(resource.provider.exists?).to eq(true)
+    end
+  end
+
+  context '#destroy' do
+    it 'raises an error' do
+      resource = described_class.resource_type.new(:name => '0:0:0:0', :journal => '1:0:0:0')
+
+      expect do
+        resource.provider.destroy
+      end.to raise_error(Puppet::Error, /unsupported operation/)
+    end
+  end
+
+  context '#create' do
+    it 'calls osd_prepare with the correct arguments' do
+      resource = described_class.resource_type.new(:name => '0:0:0:0', :journal => '1:0:0:0')
+
+      described_class.stubs(:identifier_to_dev).with('0:0:0:0').returns('/dev/sdb')
+      described_class.stubs(:identifier_to_dev).with('1:0:0:0').returns('/dev/sdc')
+      described_class.stubs(:device_prepared?).with('/dev/sdb').returns(true)
+      described_class.expects(:osd_prepare).with('/dev/sdb', '/dev/sdc', {})
+
+      resource.provider.exists?
+      resource.provider.create
+    end
+  end
 end

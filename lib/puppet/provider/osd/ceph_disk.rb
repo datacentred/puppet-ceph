@@ -110,7 +110,7 @@ public
 
   # Destroy the resource
   def destroy
-    raise Puppet::Error 'unsupported operation'
+    raise Puppet::Error, 'unsupported operation'
   end
 
   # Check if the resource exists

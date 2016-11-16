@@ -64,12 +64,4 @@ Puppet::Type.newtype(:osd) do
     raise ArgumentError, 'osd::validate_params invalid key type' unless params.keys.all? { |k| k.is_a?(String) }
     raise ArgumentError, 'osd::validate_params invalid value type' unless params.values.all? { |v| v.is_a?(String) || v == :undef }
   end
-
-  autorequire(:package) do
-    'ceph'
-  end
-
-  autorequire(:file) do
-    '/var/lib/ceph/bootstrap-osd/ceph.keyring'
-  end
 end

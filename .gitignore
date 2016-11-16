@@ -11,3 +11,4 @@ pkg
 travis.log
 .bundle
 vendor
+coverage
