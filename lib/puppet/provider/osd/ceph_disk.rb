@@ -32,6 +32,7 @@ private
     # TODO: Supports one enclosure services device, need a way of reliably
     #       addressing expanders
     path = '/sys/class/enclosure'
+    return nil unless File.exist?(path)
     enclosures = Dir.entries(path).reject { |x| x.start_with? '.' }
     return nil unless enclosures.length == 1
     # Get the device from the enclosure slot
@@ -50,7 +51,7 @@ private
       identifier
     elsif identifier.start_with?('Slot', 'DISK')
       enclosure_slot_to_dev(identifier)
-    else
+    elsif identifier =~ /^\d+:\d+:\d+:\d+$/
       scsi_address_to_dev(identifier)
     end
   end
@@ -59,17 +60,24 @@ private
   # Params:
   # +dev+:: Device short name e.g. sdd
   def self.device_prepared?(dev)
-    sgdisk = `sgdisk -i 1 #{dev}`
+    sgdisk = Puppet::Util::Execution.execute("sgdisk -i 1 #{dev}")
     OSD_UUIDS.any? { |uuid| sgdisk.include?(uuid) }
+  end
+
+  # Format parameters
+  # Params:
+  # +params+:: Parameter hash
+  def self.format_params(params)
+    # Parameter list is stripped of leading hyphens
+    # An undefined value is an option without an argument
+    resource[:params].map do |k, v|
+      v == :undef ? "--#{k}" : "--#{k} #{v}"
+    end.join(' ')
   end
 
   # Prepare an OSD
   def osd_prepare
-    # Parameter list is stripped of leading hyphens
-    # An undefined value is an option without an argument
-    params = resource[:params].map do |k, v|
-      v == :undef ? "--#{k}" : "--#{k} #{v}"
-    end.join(' ')
+    params = format_params(resource[:params])
     command = 'ceph-disk prepare'
     command << " #{params}" unless params.empty?
     command << " #{@osd_dev}"
