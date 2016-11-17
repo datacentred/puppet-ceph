@@ -1,14 +1,16 @@
-require 'rspec-puppet'
-
-fixture_path = File.expand_path(File.join(__FILE__, '..', 'fixtures'))
-
+require 'puppetlabs_spec_helper/module_spec_helper'
 require 'coveralls'
-Coveralls.wear!
+require 'simplecov'
+
+SimpleCov.profiles.define 'rspec-puppet' do
+  add_filter '/fixtures/'
+  add_filter '/spec/'
+end
+
+Coveralls.wear! 'rspec-puppet'
 Coveralls.noisy = true
 
 RSpec.configure do |c|
-  c.module_path = File.join(fixture_path, 'modules')
-  c.manifest_dir = File.join(fixture_path, 'manifests')
   c.add_formatter 'documentation'
   c.mock_with :mocha
 end
