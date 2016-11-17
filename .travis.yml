@@ -1,19 +1,19 @@
+---
 rvm:
 - 2.3.1
-before_script:
-- bundle exec rake lint
-- bundle exec rake rubocop
-- bundle exec rake validate
-- bundle exec rake spec
 script:
-- bundle exec rake beaker
+- bundle exec rake $COMMAND
 env:
   matrix:
-  - PUPPET_INSTALL_TYPE=foss BEAKER_set=openstack-ubuntu-trusty
-  - PUPPET_INSTALL_TYPE=foss BEAKER_set=openstack-centos-7
-  - PUPPET_INSTALL_TYPE=agent BEAKER_set=openstack-ubuntu-xenial
-  - PUPPET_INSTALL_TYPE=agent BEAKER_set=openstack-ubuntu-trusty
-  - PUPPET_INSTALL_TYPE=agent BEAKER_set=openstack-centos-7
+  - COMMAND=lint
+  - COMMAND=rubocop
+  - COMMAND=validate
+  - COMMAND=spec
+  - COMMAND=beaker PUPPET_INSTALL_TYPE=foss BEAKER_set=openstack-ubuntu-trusty
+  - COMMAND=beaker PUPPET_INSTALL_TYPE=foss BEAKER_set=openstack-centos-7
+  - COMMAND=beaker PUPPET_INSTALL_TYPE=agent BEAKER_set=openstack-ubuntu-xenial
+  - COMMAND=beaker PUPPET_INSTALL_TYPE=agent BEAKER_set=openstack-ubuntu-trusty
+  - COMMAND=beaker PUPPET_INSTALL_TYPE=agent BEAKER_set=openstack-centos-7
   global:
   - BEAKER_debug=yes
   - secure: bU8sQPiL9c48X0BAoJZtMsRXCcCrZsfHo73z6jUeGsaiPL0+4Oiy77zHbkQZfMUlSi8Tl6f+s5nhKnmyx08gPybO9l+IDP/ef7oE9f/XwMGTln6MX8itsUjDI6SnQfniHyI9pz2psllijww5rcdBqRhr4dZ5lc0y0qF0BQgE0FdsIdWWZPrr0c/ofKT0q6iJhgGnJmE1lou1S+eCQhW1ssiwDM/PEyYaJ21fxmSTk/Sco46WFDUHmJmt38YwPAHIoDu5FRYrkgPpwLjZrxV1YCqagOd9Pl127D9DzkFETw7TFEGRHgcLNHqf8+gHTdVFmka8KRp34kXzwK2rl49ZNHMO3vY0QifyCPGUHcdFL3bu7NR/REJOnHp8/4sFiwzoG8hmoaPq5kkK12EE5pVhI/GKrJPGd8dRnbzG9MchCcmrD9r9rO3XmPR297Grfj95/vUkTup5jCc3JRX1rZjYKXOBCAYcMSdm1WXpO+rT56O864xp30GejGkLf0ZuZqJ3oMW65PzuWX50NqUJVg/FEmjaTJ9otssUT+xtTJ8R53gAwPElVsEK/g4n8fKnCMhnPVNgmGkshR9QX3BTWyl52ZAYY7MpFnLXh5x9E9P+M75i99tVR1lgZST0mI6E8vwWxRiu+MLuJZC4xKERTFreDrZCkfvAFuVAhW5aan2tZwI=

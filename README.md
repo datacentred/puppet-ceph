@@ -1,6 +1,7 @@
 # Ceph
 
 [![Build Status](https://travis-ci.org/spjmurray/puppet-ceph.png?branch=master)](https://travis-ci.org/spjmurray/puppet-ceph)
+[![Coverage Status](https://coveralls.io/repos/github/spjmurray/puppet-ceph/badge.svg?branch=master)](https://coveralls.io/github/spjmurray/puppet-ceph?branch=master)
 
 #### Table Of Contents
 
