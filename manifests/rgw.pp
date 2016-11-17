@@ -32,12 +32,7 @@ class ceph::rgw {
     } ->
 
     exec { 'rgw keyring create':
-      command => "/usr/bin/ceph --name client.bootstrap-rgw \
-                 --keyring /var/lib/ceph/bootstrap-rgw/ceph.keyring \
-                 auth get-or-create client.${::ceph::rgw_id} \
-                 mon 'allow rw' \
-                 osd 'allow rwx' \
-                 -o /var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}/keyring",
+      command => "/usr/bin/ceph --name client.bootstrap-rgw --keyring /var/lib/ceph/bootstrap-rgw/ceph.keyring auth get-or-create client.${::ceph::rgw_id} mon 'allow rw' osd 'allow rwx' -o /var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}/keyring",
       creates => "/var/lib/ceph/radosgw/ceph-${::ceph::rgw_id}/keyring",
       user    => $::ceph::user,
     } ->

@@ -28,12 +28,7 @@ class ceph::mds {
     } ->
 
     exec { 'mds keyring create':
-      command => "/usr/bin/ceph --name client.bootstrap-mds \
-                 --keyring /var/lib/ceph/bootstrap-mds/ceph.keyring \
-                 auth get-or-create mds.${::ceph::mds_id} \
-                 mon 'allow profile mds' \
-                 osd 'allow rwx' mds allow \
-                 -o /var/lib/ceph/mds/ceph-${::ceph::mds_id}/keyring",
+      command => "/usr/bin/ceph --name client.bootstrap-mds --keyring /var/lib/ceph/bootstrap-mds/ceph.keyring auth get-or-create mds.${::ceph::mds_id} mon 'allow profile mds' osd 'allow rwx' mds allow -o /var/lib/ceph/mds/ceph-${::ceph::mds_id}/keyring",
       creates => "/var/lib/ceph/mds/ceph-${::ceph::mds_id}/keyring",
       user    => $::ceph::user,
     } ->

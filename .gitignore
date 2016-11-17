@@ -12,3 +12,4 @@ travis.log
 .bundle
 vendor
 coverage
+spec/fixtures

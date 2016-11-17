@@ -55,6 +55,8 @@ define ceph::keyring (
 
   file { $name:
     ensure  => file,
+    owner   => $owner,
+    group   => $group,
     mode    => $mode,
     content => template('ceph/keyring.erb'),
   }
@@ -66,9 +68,11 @@ define ceph::keyring (
     $mon_name = 'mon.'
     $mon_key = "/var/lib/ceph/mon/ceph-${ceph::mon_id}/keyring"
 
-    exec { "/usr/bin/ceph -n ${mon_name} -k ${mon_key} auth import -i ${name}":
+    File[$name] ->
+
+    exec { "keyring inject ${user}":
+      command => "/usr/bin/ceph -n ${mon_name} -k ${mon_key} auth import -i ${name}",
       unless  => "/usr/bin/ceph -n ${mon_name} -k ${mon_key} auth list | grep ${key}",
-      require => File[$name],
     }
 
   }

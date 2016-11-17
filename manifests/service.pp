@@ -5,8 +5,9 @@
 class ceph::service {
 
   if $::ceph::service_provider == 'systemd' {
-    exec { '/bin/systemctl enable ceph.target':
-      unless => '/bin/systemctl is-enabled ceph.target',
+    exec { 'ceph.target enable':
+      command => '/bin/systemctl enable ceph.target',
+      unless  => '/bin/systemctl is-enabled ceph.target',
     }
   }
 
