@@ -16,7 +16,7 @@ class ceph::mon {
 
     # Create the monitor filesystem
     exec { 'mon create':
-      command => "ceph-mon --mkfs -i ${::ceph::mon_id} --key ${::ceph::mon_key}",
+      command => "/usr/bin/ceph-mon --mkfs -i ${::ceph::mon_id} --key ${::ceph::mon_key}",
       creates => "/var/lib/ceph/mon/ceph-${::ceph::mon_id}",
       user    => $::ceph::user,
       group   => $::ceph::group,
@@ -30,19 +30,19 @@ class ceph::mon {
 
     # Prevent ceph-create-keys from adding in defaults on monitor startup
     exec { 'mon inhibit create client.admin':
-      command => 'touch /etc/ceph/ceph.client.admin.keyring',
+      command => '/usr/bin/touch /etc/ceph/ceph.client.admin.keyring',
       creates => '/etc/ceph/ceph.client.admin.keyring',
     } ->
     exec { 'mon inhibit create client.bootstrap-osd':
-      command => 'touch /var/lib/ceph/bootstrap-osd/ceph.keyring',
+      command => '/usr/bin/touch /var/lib/ceph/bootstrap-osd/ceph.keyring',
       creates => '/var/lib/ceph/bootstrap-osd/ceph.keyring',
     } ->
     exec { 'mon inhibit create client.bootstrap-mds':
-      command => 'touch /var/lib/ceph/bootstrap-mds/ceph.keyring',
+      command => '/usr/bin/touch /var/lib/ceph/bootstrap-mds/ceph.keyring',
       creates => '/var/lib/ceph/bootstrap-mds/ceph.keyring',
     } ->
     exec { 'mon inhibit create client.bootstrap-rgw':
-      command => 'touch /var/lib/ceph/bootstrap-rgw/ceph.keyring',
+      command => '/usr/bin/touch /var/lib/ceph/bootstrap-rgw/ceph.keyring',
       creates => '/var/lib/ceph/bootstrap-rgw/ceph.keyring',
     } ->
 
@@ -59,19 +59,19 @@ class ceph::mon {
         } ->
 
         exec { 'mon service start':
-          command => "start ceph-mon id=${::ceph::mon_id}",
-          unless  => "status ceph-mon id=${::ceph::mon_id}",
+          command => "/sbin/start ceph-mon id=${::ceph::mon_id}",
+          unless  => "/sbin/status ceph-mon id=${::ceph::mon_id}",
         }
       }
       'systemd': {
         exec { 'mon service enable':
-          command => "systemctl enable ceph-mon@${::ceph::mon_id}",
-          unless  => "systemctl is-enabled ceph-mon@${::ceph::mon_id}",
+          command => "/bin/systemctl enable ceph-mon@${::ceph::mon_id}",
+          unless  => "/bin/systemctl is-enabled ceph-mon@${::ceph::mon_id}",
         } ->
 
         exec { 'mon service start':
-          command => "systemctl start ceph-mon@${::ceph::mon_id}",
-          unless  => "systemctl status ceph-mon@${::ceph::mon_id}",
+          command => "/bin/systemctl start ceph-mon@${::ceph::mon_id}",
+          unless  => "/bin/systemctl status ceph-mon@${::ceph::mon_id}",
         }
       }
       default: {

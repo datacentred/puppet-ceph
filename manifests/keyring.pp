@@ -66,8 +66,8 @@ define ceph::keyring (
     $mon_name = 'mon.'
     $mon_key = "/var/lib/ceph/mon/ceph-${ceph::mon_id}/keyring"
 
-    exec { "ceph -n ${mon_name} -k ${mon_key} auth import -i ${name}":
-      unless  => "ceph -n ${mon_name} -k ${mon_key} auth list | grep ${key}",
+    exec { "/usr/bin/ceph -n ${mon_name} -k ${mon_key} auth import -i ${name}":
+      unless  => "/usr/bin/ceph -n ${mon_name} -k ${mon_key} auth list | grep ${key}",
       require => File[$name],
     }
 

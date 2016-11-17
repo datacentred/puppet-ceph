@@ -28,7 +28,7 @@ class ceph::mds {
     } ->
 
     exec { 'mds keyring create':
-      command => "ceph --name client.bootstrap-mds \
+      command => "/usr/bin/ceph --name client.bootstrap-mds \
                  --keyring /var/lib/ceph/bootstrap-mds/ceph.keyring \
                  auth get-or-create mds.${::ceph::mds_id} \
                  mon 'allow profile mds' \
@@ -48,19 +48,19 @@ class ceph::mds {
         } ->
 
         exec { 'mds service start':
-          command => "start ceph-mds id=${::ceph::mds_id}",
-          unless  => "status ceph-mds id=${::ceph::mds_id}",
+          command => "/sbin/start ceph-mds id=${::ceph::mds_id}",
+          unless  => "/sbin/status ceph-mds id=${::ceph::mds_id}",
         }
       }
       'systemd': {
         exec { 'mds service enable':
-          command => "systemctl enable ceph-mds@${::ceph::mds_id}",
-          unless  => "systemctl is-enabled ceph-mds@${::ceph::mds_id}",
+          command => "/bin/systemctl enable ceph-mds@${::ceph::mds_id}",
+          unless  => "/bin/systemctl is-enabled ceph-mds@${::ceph::mds_id}",
         } ->
 
         exec { 'mds service start':
-          command => "systemctl start ceph-mds@${::ceph::mds_id}",
-          unless  => "systemctl status ceph-mds@${::ceph::mds_id}",
+          command => "/bin/systemctl start ceph-mds@${::ceph::mds_id}",
+          unless  => "/bin/systemctl status ceph-mds@${::ceph::mds_id}",
         }
       }
       default: {

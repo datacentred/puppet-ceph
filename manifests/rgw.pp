@@ -32,7 +32,7 @@ class ceph::rgw {
     } ->
 
     exec { 'rgw keyring create':
-      command => "ceph --name client.bootstrap-rgw \
+      command => "/usr/bin/ceph --name client.bootstrap-rgw \
                  --keyring /var/lib/ceph/bootstrap-rgw/ceph.keyring \
                  auth get-or-create client.${::ceph::rgw_id} \
                  mon 'allow rw' \
@@ -52,19 +52,19 @@ class ceph::rgw {
         } ->
 
         exec { 'rgw service start':
-          command => "start radosgw id=${::ceph::rgw_id}",
-          unless  => "status radosgw id=${::ceph::rgw_id}",
+          command => "/sbin/start radosgw id=${::ceph::rgw_id}",
+          unless  => "/sbin/status radosgw id=${::ceph::rgw_id}",
         }
       }
       'systemd': {
         exec { 'rgw service enable':
-          command => "systemctl enable ceph-radosgw@${::ceph::rgw_id}",
-          unless  => "systemctl is-enabled ceph-radosgw@${::ceph::rgw_id}",
+          command => "/bin/systemctl enable ceph-radosgw@${::ceph::rgw_id}",
+          unless  => "/bin/systemctl is-enabled ceph-radosgw@${::ceph::rgw_id}",
         } ->
 
         exec { 'rgw service start':
-          command => "systemctl start ceph-radosgw@${::ceph::rgw_id}",
-          unless  => "systemctl status ceph-radosgw@${::ceph::rgw_id}",
+          command => "/bin/systemctl start ceph-radosgw@${::ceph::rgw_id}",
+          unless  => "/bin/systemctl status ceph-radosgw@${::ceph::rgw_id}",
         }
       }
       default: {

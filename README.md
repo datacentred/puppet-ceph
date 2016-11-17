@@ -59,20 +59,6 @@ without arguments like --bluestore.
 
 \* Ubuntu 16.04 only tested with Puppet 4
 
-## Setup
-
-### Setup Requirements
-
-Paths to binaries executed by this module are relative, so you will need to include
-the following snippet, typically in manifests/site.pp, in order to execute the
-generated catalog:
-
-```puppet
-Exec {
-  path => '/bin:/usr/bin:/sbin:/usr/sbin',
-}
-```
-
 ## Usage
 
 ### Basic Usage
