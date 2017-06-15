@@ -98,14 +98,14 @@ describe 'ceph' do
     end
 
     it 'rgw accepts http requests' do
-      retry_on(default, 'netstat -l | grep 7480', :max_retries => 30)
+      retry_on(default, 'netstat -l | grep 7480', :max_retries => 120)
     end
 
     it 'mds is active' do
       on(default, 'ceph osd pool create cephfs-meta 32')
       on(default, 'ceph osd pool create cephfs-data 32')
       on(default, 'ceph fs new cephfs cephfs-meta cephfs-data')
-      retry_on(default, 'ceph mds stat | grep active', :max_retries => 30)
+      retry_on(default, 'ceph mds stat | grep active', :max_retries => 120)
     end
   end
 
@@ -114,11 +114,11 @@ describe 'ceph' do
     default.wait_for_port(22) # Takes a while for Centos
 
     it 'rgw accepts http requests' do
-      retry_on(default, 'netstat -l | grep 7480', :max_retries => 30)
+      retry_on(default, 'netstat -l | grep 7480', :max_retries => 120)
     end
 
     it 'mds is active' do
-      retry_on(default, 'ceph mds stat | grep active', :max_retries => 30)
+      retry_on(default, 'ceph mds stat | grep active', :max_retries => 120)
     end
   end
 end
