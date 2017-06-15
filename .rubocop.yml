@@ -12,7 +12,7 @@ AllCops:
 Style/HashSyntax:
   Enabled: false
 
-Style/IndentArray:
+Layout/IndentArray:
     EnforcedStyle: consistent
 
 Metrics/LineLength:

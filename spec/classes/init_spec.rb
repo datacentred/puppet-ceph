@@ -1,18 +1,18 @@
 require 'spec_helper'
 
-CONF = <<EOS.freeze
-[main]
-  fsid = 12345
-[osd]
-  osd_journal_size = 12345
+CONF = <<EOS.gsub(/^\s+\|/, '')
+  |[main]
+  |  fsid = 12345
+  |[osd]
+  |  osd_journal_size = 12345
 EOS
 
-KEY = <<EOS.freeze
-[client.admin]
-  key = AQBAyNlUmO09CxAA2u2p6s38wKkBXaLWFeD7bA==
-  caps mon = "allow *"
-  caps mds = "allow"
-  caps osd = "allow *"
+KEY = <<EOS.gsub(/^\s+\|/, '')
+  |[client.admin]
+  |  key = AQBAyNlUmO09CxAA2u2p6s38wKkBXaLWFeD7bA==
+  |  caps mon = "allow *"
+  |  caps mds = "allow"
+  |  caps osd = "allow *"
 EOS
 
 describe 'ceph', :type => :class do

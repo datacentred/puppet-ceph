@@ -28,4 +28,4 @@ namespace :rspec do
   end
 end
 
-task :default => [:rspec, :lint]
+task :default => %i[rspec lint]
