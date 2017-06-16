@@ -64,13 +64,14 @@ describe 'ceph', :type => :class do
     let :facts do
       {
         :osfamily => 'Debian',
-        :operatingsystem => 'Ubuntu',
-        :operatingsystemrelease => '16.04',
-        :lsbdistcodename => 'xenial',
         :os => {
+          :family => 'Debian',
           :name => 'Ubuntu',
           :release => {
             :full => '16.04',
+          },
+          :lsb => {
+            :distcodename => 'xenial',
           },
         },
       }
@@ -414,13 +415,14 @@ describe 'ceph', :type => :class do
     let :facts do
       {
         :osfamily => 'Debian',
-        :operatingsystem => 'Ubuntu',
-        :operatingsystemrelease => '14.04',
-        :lsbdistcodename => 'trusty',
         :os => {
+          :family => 'Debian',
           :name => 'Ubuntu',
           :release => {
             :full => '14.04',
+          },
+          :lsb => {
+            :distcodename => 'trusty',
           },
         },
       }
@@ -487,8 +489,10 @@ describe 'ceph', :type => :class do
   context 'on a centos 7 system' do
     let :facts do
       {
-        :osfamily => 'RedHat',
-        :operatingsystem => 'CentOS'
+        :os => {
+          :family => 'RedHat',
+          :name => 'Centos',
+        },
       }
     end
 

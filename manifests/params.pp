@@ -4,9 +4,9 @@
 #
 class ceph::params {
 
-  case $::operatingsystem {
+  case $::facts['os']['name'] {
     'Ubuntu': {
-      if versioncmp($::operatingsystemrelease, '16.04') >= 0 {
+      if versioncmp($::facts['os']['release']['full'], '16.04') >= 0 {
         $service_provider = 'systemd'
       } else {
         $service_provider = 'upstart'
