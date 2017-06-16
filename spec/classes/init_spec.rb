@@ -66,10 +66,13 @@ describe 'ceph', :type => :class do
         :osfamily => 'Debian',
         :operatingsystem => 'Ubuntu',
         :operatingsystemrelease => '16.04',
-        :lsbdistid => 'Ubuntu',
-        :lsbdistrelease => '16.04',
         :lsbdistcodename => 'xenial',
-        :puppetversion => '4.6.0'
+        :os => {
+          :name => 'Ubuntu',
+          :release => {
+            :full => '16.04',
+          },
+        },
       }
     end
 
@@ -413,10 +416,13 @@ describe 'ceph', :type => :class do
         :osfamily => 'Debian',
         :operatingsystem => 'Ubuntu',
         :operatingsystemrelease => '14.04',
-        :lsbdistid => 'Ubuntu',
-        :lsbdistrelease => '14.04',
         :lsbdistcodename => 'trusty',
-        :puppetversion => '4.6.0'
+        :os => {
+          :name => 'Ubuntu',
+          :release => {
+            :full => '14.04',
+          },
+        },
       }
     end
 
