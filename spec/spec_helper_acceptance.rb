@@ -20,7 +20,7 @@ RSpec.configure do |c|
 
       # Install EPEL on centos
       if host['platform'].start_with?('el')
-        on(host, 'rpm -i http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm')
+        on(host, 'rpm -i http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm')
       end
     end
   end
