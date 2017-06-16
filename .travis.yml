@@ -9,8 +9,6 @@ env:
   - COMMAND=rubocop
   - COMMAND=validate
   - COMMAND=spec
-  - COMMAND=beaker PUPPET_INSTALL_TYPE=foss BEAKER_set=openstack-ubuntu-trusty
-  - COMMAND=beaker PUPPET_INSTALL_TYPE=foss BEAKER_set=openstack-centos-7
   - COMMAND=beaker PUPPET_INSTALL_TYPE=agent BEAKER_set=openstack-ubuntu-xenial
   - COMMAND=beaker PUPPET_INSTALL_TYPE=agent BEAKER_set=openstack-ubuntu-trusty
   - COMMAND=beaker PUPPET_INSTALL_TYPE=agent BEAKER_set=openstack-centos-7
