@@ -4,6 +4,7 @@ require 'puppet-lint/tasks/puppet-lint'
 require 'puppetlabs_spec_helper/rake_tasks'
 
 PuppetLint.configuration.send('disable_autoloader_layout')
+PuppetLint.configuration.send('disable_arrow_on_right_operand_line')
 PuppetLint.configuration.ignore_paths = [
   'spec/**/*.pp',
   'pkg/**/*.pp',
