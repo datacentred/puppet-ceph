@@ -70,8 +70,8 @@ describe 'ceph', :type => :class do
           :release => {
             :full => '16.04'
           },
-          :lsb => {
-            :distcodename => 'xenial'
+          :distro => {
+            :codename => 'xenial'
           }
         }
       }
@@ -421,8 +421,8 @@ describe 'ceph', :type => :class do
           :release => {
             :full => '14.04'
           },
-          :lsb => {
-            :distcodename => 'trusty'
+          :distro => {
+            :codename => 'trusty'
           }
         }
       }
