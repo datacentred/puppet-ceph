@@ -68,12 +68,12 @@ describe 'ceph', :type => :class do
           :family => 'Debian',
           :name => 'Ubuntu',
           :release => {
-            :full => '16.04',
+            :full => '16.04'
           },
           :lsb => {
-            :distcodename => 'xenial',
-          },
-        },
+            :distcodename => 'xenial'
+          }
+        }
       }
     end
 
@@ -419,12 +419,12 @@ describe 'ceph', :type => :class do
           :family => 'Debian',
           :name => 'Ubuntu',
           :release => {
-            :full => '14.04',
+            :full => '14.04'
           },
           :lsb => {
-            :distcodename => 'trusty',
-          },
-        },
+            :distcodename => 'trusty'
+          }
+        }
       }
     end
 
@@ -491,8 +491,8 @@ describe 'ceph', :type => :class do
       {
         :os => {
           :family => 'RedHat',
-          :name => 'Centos',
-        },
+          :name => 'Centos'
+        }
       }
     end
 
