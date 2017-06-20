@@ -65,24 +65,24 @@
 #
 class ceph (
   # Install component
-  $mon = false,
-  $osd = false,
-  $rgw = false,
-  $mds = false,
+  Boolean $mon = false,
+  Boolean $osd = false,
+  Boolean $rgw = false,
+  Boolean $mds = false,
   # Package management
-  $manage_repo = true,
-  $repo_mirror = 'eu.ceph.com',
-  $repo_version = 'jewel',
+  Boolean $manage_repo = true,
+  String $repo_mirror = 'eu.ceph.com',
+  String $repo_version = 'jewel',
   # Package management
-  $package_ensure = 'installed',
+  String $package_ensure = 'installed',
   # User management
-  $user = 'ceph',
-  $group = 'ceph',
+  String $user = 'ceph',
+  String $group = 'ceph',
   # Security
-  $seltype = 'ceph_var_lib_t',
+  String $seltype = 'ceph_var_lib_t',
   # Global configuration
-  $conf_merge = false,
-  $conf = {
+  Boolean $conf_merge = false,
+  Ceph::Conf $conf = {
     'global'                => {
       'fsid'                      => '62ed9bd6-adf4-11e4-8fb5-3c970ebb2b86',
       'mon_initial_members'       => 'mon0',
@@ -101,11 +101,11 @@ class ceph (
     },
   },
   # Monitor configuration
-  $mon_id = $::hostname,
-  $mon_key = 'AQA7yNlUMy3sFhAA62XHf57L0QhSI44qqqOVXA==',
+  String $mon_id = $::hostname,
+  String $mon_key = 'AQA7yNlUMy3sFhAA62XHf57L0QhSI44qqqOVXA==',
   # Key management
-  $keys_merge = false,
-  $keys = {
+  Boolean $keys_merge = false,
+  Ceph::Keys $keys = {
     '/etc/ceph/ceph.client.admin.keyring'      => {
       'user'     => 'client.admin',
       'key'      => 'AQBAyNlUmO09CxAA2u2p6s38wKkBXaLWFeD7bA==',
@@ -130,7 +130,7 @@ class ceph (
     },
   },
   # OSD management
-  $disks = {
+  Ceph::Disks $disks = {
     '2:0:0:0' => {
       'journal' => '5:0:0:0',
       'params'  => {
@@ -151,13 +151,13 @@ class ceph (
     },
   },
   # RGW management
-  $rgw_id = "rgw.${::hostname}",
+  String $rgw_id = "rgw.${::hostname}",
   # MDS management
-  $mds_id = $::hostname,
+  String $mds_id = $::hostname,
   # Parameters
-  $service_provider = $::ceph::params::service_provider,
-  $radosgw_package = $::ceph::params::radosgw_package,
-  $prerequisites = $::ceph::params::prerequisites,
+  String $service_provider = $::ceph::params::service_provider,
+  String $radosgw_package = $::ceph::params::radosgw_package,
+  Ceph::Packages $prerequisites = $::ceph::params::prerequisites,
 ) inherits ceph::params {
 
   contain ::ceph::repo
