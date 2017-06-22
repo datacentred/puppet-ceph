@@ -192,6 +192,13 @@ describe 'ceph', :type => :class do
           'unless' => '/bin/systemctl is-enabled ceph.target'
         )
       end
+
+      it 'reloads systemctl on a systemd system' do
+        is_expected.to contain_exec('ceph::service systemctl reload').with(
+          'command' => '/bin/systemctl daemon-reload',
+          'refreshonly' => 'true'
+        )
+      end
     end
 
     context 'ceph::mon' do
