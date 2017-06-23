@@ -35,7 +35,7 @@ describe 'ceph', :type => :class do
           'fsid' => '12345'
         },
         'osd' => {
-          'osd_journal_size' => 12345
+          'osd_journal_size' => 12_345
         }
       },
       :user => 'mickey',
@@ -311,7 +311,7 @@ describe 'ceph', :type => :class do
           'journal' => '4:0:0:0',
           'params' => {
             'fs-type' => 'xfs',
-            'bluestore' => :undef,
+            'bluestore' => :undef
           }
         )
       end
