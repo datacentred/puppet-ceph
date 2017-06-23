@@ -35,7 +35,7 @@ describe 'ceph', :type => :class do
           'fsid' => '12345'
         },
         'osd' => {
-          'osd_journal_size' => '12345'
+          'osd_journal_size' => 12345
         }
       },
       :user => 'mickey',
@@ -44,7 +44,8 @@ describe 'ceph', :type => :class do
         '2:0:0:0' => {
           'journal' => '4:0:0:0',
           'params' => {
-            'fs-type' => 'xfs'
+            'fs-type'   => 'xfs',
+            'bluestore' => :undef
           }
         }
       },
@@ -309,7 +310,8 @@ describe 'ceph', :type => :class do
         is_expected.to contain_osd('2:0:0:0').with(
           'journal' => '4:0:0:0',
           'params' => {
-            'fs-type' => 'xfs'
+            'fs-type' => 'xfs',
+            'bluestore' => :undef,
           }
         )
       end
