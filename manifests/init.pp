@@ -151,7 +151,7 @@ class ceph (
     },
   },
   # RGW management
-  String $rgw_id = "rgw.${::hostname}",
+  Ceph::RgwID $rgw_id = "rgw.${::hostname}",
   # MDS management
   String $mds_id = $::hostname,
   # Parameters
