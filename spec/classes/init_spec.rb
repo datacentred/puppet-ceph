@@ -49,6 +49,9 @@ describe 'ceph', :type => :class do
         },
         '2:0:0:0' => {
           'journal' => '4:0:0:0'
+        },
+        'Slot 01' => {
+          'journal' => 'DISK00'
         }
       },
       :keys => {
@@ -311,6 +314,14 @@ describe 'ceph', :type => :class do
       it 'populates osds correctly' do
         is_expected.to contain_osd('2:0:0:0').with(
           'journal' => '4:0:0:0',
+          'params' => {
+            'fs-type' => 'xfs',
+            'bluestore' => :undef
+          }
+        )
+
+        is_expected.to contain_osd('Slot 01').with(
+          'journal' => 'DISK00',
           'params' => {
             'fs-type' => 'xfs',
             'bluestore' => :undef
