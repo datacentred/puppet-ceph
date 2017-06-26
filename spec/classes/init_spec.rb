@@ -41,12 +41,14 @@ describe 'ceph', :type => :class do
       :user => 'mickey',
       :group => 'mouse',
       :disks => {
-        '2:0:0:0' => {
-          'journal' => '4:0:0:0',
+        'defaults' => {
           'params' => {
             'fs-type'   => 'xfs',
             'bluestore' => :undef
           }
+        },
+        '2:0:0:0' => {
+          'journal' => '4:0:0:0'
         }
       },
       :keys => {

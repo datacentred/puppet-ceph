@@ -30,46 +30,38 @@ describe 'ceph' do
     if default['hypervisor'] == 'vagrant'
       disks = <<-EOS
         disks => {
-          '2:0:0:0' => {
-            'journal' => '5:0:0:0',
-            'params'  => {
+          'defaults' => {
+            'params' => {
               'fs-type' => 'xfs',
             },
+          },
+          '2:0:0:0' => {
+            'journal' => '5:0:0:0',
           },
           '3:0:0:0' => {
             'journal' => '5:0:0:0',
-            'params'  => {
-              'fs-type' => 'xfs',
-            },
           },
           '4:0:0:0' => {
             'journal' => '5:0:0:0',
-            'params'  => {
-              'fs-type' => 'xfs',
-            },
           },
         },
       EOS
     elsif default['hypervisor'] == 'openstack'
       disks = <<-EOS
         disks => {
-          '2:0:0:1' => {
-            'journal' => '2:0:0:4',
-            'params'  => {
+          'defaults' => {
+            'params' => {
               'fs-type' => 'xfs',
             },
+          },
+          '2:0:0:1' => {
+            'journal' => '2:0:0:4',
           },
           '2:0:0:2' => {
             'journal' => '2:0:0:4',
-            'params'  => {
-              'fs-type' => 'xfs',
-            },
           },
           '2:0:0:3' => {
             'journal' => '2:0:0:4',
-            'params'  => {
-              'fs-type' => 'xfs',
-            },
           },
         },
       EOS

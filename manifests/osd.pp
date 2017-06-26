@@ -8,7 +8,15 @@ class ceph::osd {
 
   if $::ceph::osd {
 
-    create_resources('osd', $::ceph::disks)
+    if has_key($::ceph::disks, 'defaults') {
+      $_defaults = $::ceph::disks['defaults']
+      $_disks = delete($::ceph::disks, 'defaults')
+    } else {
+      $_defaults = {}
+      $_disks = $::ceph::disks
+    }
+
+    create_resources('osd', $_disks, $_defaults)
 
   }
 

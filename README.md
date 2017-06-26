@@ -43,7 +43,8 @@ interchangably.
 The OSD provider also accepts an arbitrary hash of parameters to be passed to
 ceph-disk.  The keys are the long options supported by ceph-disk stripped of the
 leading double hyphens.  Values are either strings or nil/undef e.g. for options
-without arguments like --bluestore.
+without arguments like --bluestore.  These may be specified for all OSDs with
+the special name `defaults`.
 
 ## Compatibility Matrix
 
@@ -56,7 +57,7 @@ without arguments like --bluestore.
 | 1.4.x   | Ubuntu 14.04, Centos 7                 | 9    | 3, 4   |
 | 1.5.x   | Ubuntu 14.04, Ubuntu 16.04\*, Centos 7 | 10   | 3, 4   |
 | 2.0.x   | Ubuntu 14.04, Ubuntu 16.04\*, Centos 7 | 10   | 3, 4   |
-| 2.1.x   | Ubuntu 14.04, Ubuntu 16.04, Centos 7   | 10   | 4      |
+| 3.x.x   | Ubuntu 14.04, Ubuntu 16.04, Centos 7   | 10   | 4      |
 
 \* Ubuntu 16.04 only tested with Puppet 4
 
@@ -115,18 +116,15 @@ ceph::keys:
 
 # Create the OSDs
 ceph::disks:
+  defaults:
+    params:
+      fs-type: 'xfs'
   3:0:0:0:
     journal: '6:0:0:0'
-    params:
-      fs-type: 'xfs'
   4:0:0:0:
     journal: '6:0:0:0'
-    params:
-      fs-type: 'xfs'
   5:0:0:0:
     journal: '6:0:0:0'
-    params:
-      fs-type: 'xfs'
 ```
 
 ### Advanced Usage
@@ -290,7 +288,6 @@ ceph::keys:
   /var/lib/ceph/bootstrap-rgw/ceph.keyring:
     user: 'client.bootstrap-rgw'
     key: "%{hiera('ceph_key_bootstrap_rgw')}"
-    caps_mon: 'allow profile bootstrap-rgw'
 ```
 
 ```yaml
