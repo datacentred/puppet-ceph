@@ -102,8 +102,10 @@ describe 'ceph' do
   end
 
   context 'after a reboot' do
-    default.reboot
-    default.wait_for_port(22) # Takes a while for Centos
+    it 'reboots' do
+      default.reboot
+      default.wait_for_port(22) # Takes a while for Centos
+    end
 
     it 'rgw accepts http requests' do
       retry_on(default, 'netstat -l | grep 7480', :max_retries => 120)
