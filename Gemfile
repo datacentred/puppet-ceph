@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'beaker'
+gem 'beaker', '3.18.0'
 gem 'beaker-puppet_install_helper'
 gem 'beaker-rspec'
 gem 'coveralls'
