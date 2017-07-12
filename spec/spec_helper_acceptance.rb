@@ -20,11 +20,10 @@ RSpec.configure do |c|
          :acceptable_exit_codes => [0, 1]
 
       # Install EPEL on centos
-      if host['platform'].start_with?('el')
-        epel = 'http://dl.fedoraproject.org/pub/epel/7/x86_64/e/'
-        rpm = open(epel).read[/epel-release-7-\d+\.noarch\.rpm/]
-        on(host, "rpm -i #{epel}#{rpm}")
-      end
+      next unless host['platform'].start_with?('el')
+      epel = 'http://dl.fedoraproject.org/pub/epel/7/x86_64/e/'
+      rpm = open(epel).read[/epel-release-7-\d+\.noarch\.rpm/]
+      on(host, "rpm -i #{epel}#{rpm}")
     end
   end
 end
