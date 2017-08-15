@@ -12,8 +12,8 @@ class ceph::service {
 
     # Oddly I've seen OSD udev rules not applying on Xenial which are
     # fixed with a reload
-    exec { 'ceph::service systemctl reload':
-      command     => '/bin/systemctl daemon-reload',
+    exec { 'ceph::service udev reload':
+      command     => '/bin/systemctl restart udev',
       refreshonly => true,
     }
   }

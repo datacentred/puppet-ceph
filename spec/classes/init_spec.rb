@@ -199,9 +199,9 @@ describe 'ceph', :type => :class do
         )
       end
 
-      it 'reloads systemctl on a systemd system' do
-        is_expected.to contain_exec('ceph::service systemctl reload').with(
-          'command' => '/bin/systemctl daemon-reload',
+      it 'reloads udev on a systemd system' do
+        is_expected.to contain_exec('ceph::service udev reload').with(
+          'command' => '/bin/systemctl restart udev',
           'refreshonly' => 'true'
         )
       end
